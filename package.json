@@ -1,5 +1,5 @@
 {
-  "name": "publit-api-request",
+  "name": "@publit/api-request",
   "version": "1.2.0",
   "private": true,
   "description": "A typescript library for making requests to Publit Core and similar API:s",
@@ -11,6 +11,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/publitsweden/api-request.git"
+  },
+  "publishConfig": {
+    "@publit:registry": "https://npm.pkg.github.com"
   },
   "homepage": "https://github.com/publitsweden/api-request#readme",
   "scripts": {
