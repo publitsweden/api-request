@@ -15,7 +15,8 @@
   "homepage": "https://github.com/publitsweden/api-request#readme",
   "scripts": {
     "test": "jest",
-    "build": "tsc",
+    "clean": "rm -rf ./dist",
+    "build": "npm run clean && tsc",
     "publish-major": "npm run build && npm version major",
     "publish-minor": "npm run build && npm version minor"
   },
