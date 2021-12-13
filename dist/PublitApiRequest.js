@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,10 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isApiRequestError = void 0;
 /**
  * Class for making requests to Publit Core and similar API:s
  */
-export default class PublitApiRequest {
+class PublitApiRequest {
     constructor(resource, options = {}) {
         this.options = Object.assign(Object.assign({}, PublitApiRequest.defaultOptions), options);
         const { origin, api, headers } = this.options;
@@ -275,6 +278,7 @@ export default class PublitApiRequest {
         });
     }
 }
+exports.default = PublitApiRequest;
 PublitApiRequest.defaultOptions = {
     api: '',
     headers: {
@@ -291,9 +295,10 @@ function isApiErrorObject(obj) {
         typeof obj.CombinedInfo === 'string');
 }
 /** Type guard for internal API request errors */
-export function isApiRequestError(obj) {
+function isApiRequestError(obj) {
     return (obj != null &&
         typeof obj === 'object' &&
         typeof obj.message === 'string' &&
         typeof obj.status === 'number');
 }
+exports.isApiRequestError = isApiRequestError;

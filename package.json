@@ -17,8 +17,8 @@
     "test": "jest",
     "clean": "rm -rf ./dist",
     "build": "npm run clean && tsc",
-    "publish-major": "npm run test && npm run build && npm version major",
-    "publish-minor": "npm run test && npm run build && npm version minor"
+    "publish-major": "npm version major",
+    "publish-minor": "npm version minor"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
