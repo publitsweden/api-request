@@ -21,7 +21,8 @@
     "clean": "rm -rf ./dist",
     "build": "npm run clean && tsc",
     "publish-major": "npm version major",
-    "publish-minor": "npm version minor"
+    "publish-minor": "npm version minor",
+    "build-docs": "typedoc src/index.ts"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
@@ -29,6 +30,7 @@
     "jest-fetch-mock": "^3.0.3",
     "prettier": "^2.5.1",
     "ts-jest": "^27.1.1",
+    "typedoc": "^0.22.10",
     "whatwg-fetch": "^3.6.2"
   }
 }

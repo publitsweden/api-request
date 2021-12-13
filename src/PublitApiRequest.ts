@@ -1,3 +1,6 @@
+/**
+ * Request options
+ */
 export type ApiRequestOptions = {
   /** Host origin to make request against, including protocol and port */
   origin?: string
@@ -9,16 +12,21 @@ export type ApiRequestOptions = {
   onError?: (error: ApiRequestError) => void
 }
 
-type Combinator = 'AND' | 'OR'
+/** Combinator when using multiple `where` and `has` requests */
+export type Combinator = 'AND' | 'OR'
 
-type Operator = 'EQUAL' | 'LIKE' | 'NOT_EQUAL'
+/** Operator for `where` and `has` requests */
+export type Operator = 'EQUAL' | 'LIKE' | 'NOT_EQUAL'
 
 /**
  * Whenever a request returns a list of objects, it will follow this format
  */
 export type ApiListResponse<T = unknown> = {
+  /** Array of matching objects */
   data: T[]
+  /** Total number of matches */
   count: number
+  /** URL for the next paginated result page, which we rarely use */
   next?: string
 }
 
@@ -26,8 +34,11 @@ export type ApiListResponse<T = unknown> = {
  * Internal error object returned by ApiRequest
  */
 export type ApiRequestError = {
+  /** HTTP status code */
   status?: number
+  /** Error type */
   type?: string
+  /** Error message */
   message: string
 }
 
@@ -35,19 +46,34 @@ export type ApiRequestError = {
  * External error object returned by backend
  */
 type ApiErrorObject = {
+  /** HTTP error code */
   Code: number
+  /** Error type */
   Type: string
+  /** Array of error messages */
   Errors: {
+    /** Error message */
     Info: string
+    /** Error type */
     Type: string
   }[]
+  /** All `Errors#Info` values combined */
   CombinedInfo: string
 }
 
 /**
  * Class for making requests to Publit Core and similar API:s
+ *
+ * ```ts
+ * const works = await new PublitApiRequest<Work>("works")
+ *   .where("title", "LIKE", "lord of the")
+ *   .with("contributors")
+ *   .index()
+ * ```
+ *
  */
 export default class PublitApiRequest<T> {
+  /** Options used for all requests, unless overridden individually */
   static defaultOptions: ApiRequestOptions = {
     api: '',
     headers: {
@@ -57,6 +83,10 @@ export default class PublitApiRequest<T> {
 
   /**
    * Create a new ApiRequest from a given URL
+   *
+   * ```ts
+   * PublitApiRequest.fromUrl("https://api.publit.com/publishing/v2.0/works/1")
+   * ```
    */
   static fromUrl<T>(url: string | URL): PublitApiRequest<T> {
     const request = new PublitApiRequest<T>('')
@@ -64,6 +94,9 @@ export default class PublitApiRequest<T> {
     return request
   }
 
+  /**
+   * URL object for the request
+   */
   private _url: URL
 
   public get url(): URL {
@@ -81,7 +114,12 @@ export default class PublitApiRequest<T> {
   /** Fetch response object, available after the request is done */
   response?: Response
 
-  constructor(resource: string, options: ApiRequestOptions = {}) {
+  constructor(
+    /** Resource endpoint for this request */
+    resource: string,
+    /** Options for this request instance */
+    options: ApiRequestOptions = {}
+  ) {
     this.options = {
       ...PublitApiRequest.defaultOptions,
       ...options,
@@ -118,9 +156,13 @@ export default class PublitApiRequest<T> {
 
   /**
    * Limit the number of results returned
+   *
    * Usage:
-   * .limit(10)
-   * .limit(10, 20)
+   *
+   * ```ts
+   * request.limit(10)
+   * request.limit(10, 20)
+   * ```
    */
   limit(
     /** Number of result to return */
@@ -137,11 +179,14 @@ export default class PublitApiRequest<T> {
 
   /**
    * Load relations for the requested object
+   *
    * E.g. .with('authors') or a deeper nested relation .with('authors.name'),
    * which will load parent relations as well.
-   * Usage:
-   * .with('authors')
-   * .with('authors.works')
+   *
+   * ```ts
+   * request.with('authors')
+   * request.with('authors.works')
+   * ```
    */
   with(relation: string): PublitApiRequest<T> {
     return this.appendParam('with', relation)
@@ -149,8 +194,10 @@ export default class PublitApiRequest<T> {
 
   /**
    * Allows for filtering through pre defined scopes, if any
-   * Usage:
-   * .scope('published')
+   *
+   * ```ts
+   * request.scope('published')
+   * ```
    */
   scope(method: string, qualifier?: string): PublitApiRequest<T> {
     return this.appendParam(
@@ -161,11 +208,13 @@ export default class PublitApiRequest<T> {
 
   /**
    * Allows for filtering through relations
-   * Usage:
-   *  .filter('authors', 'name', 'LIKE', 'John')
-   *  .filter('authors', 'name', 'LIKE', ['John', 'Doe'])
-   *  .filter('authors', 'name', 'LIKE', 'John', 'AND')
-   *  .filter('authors', 'name', 'EQUAL', 'John', 'AND')
+   *
+   * ```ts
+   * request.filter('authors', 'name', 'LIKE', 'John')
+   * request.filter('authors', 'name', 'LIKE', ['John', 'Doe'])
+   * request.filter('authors', 'name', 'LIKE', 'John', 'AND')
+   * request.filter('authors', 'name', 'EQUAL', 'John', 'AND')
+   * ```
    */
   has<R extends keyof T>(
     /** The relation to filter on */
@@ -191,8 +240,10 @@ export default class PublitApiRequest<T> {
 
   /**
    * Group results by a given attribute
-   * Usage:
-   * .groupBy('work_id')
+   *
+   * ```ts
+   * request.groupBy('work_id')
+   * ```
    */
   groupBy<A extends keyof T>(attribute: A): PublitApiRequest<T> {
     return this.appendParam('group_by', attribute as string)
@@ -200,11 +251,13 @@ export default class PublitApiRequest<T> {
 
   /**
    * Allows for filtering on attributes on the requested object
-   * Usage:
-   * .where('name', 'LIKE', 'John')
-   * .where('name', 'LIKE', ['John', 'Doe'])
-   * .where('name', 'LIKE', 'John', 'AND')
-   * .where('name', 'EQUAL', 'John', 'AND')
+   *
+   * ```ts
+   * request.where('name', 'LIKE', 'John')
+   * request.where('name', 'LIKE', ['John', 'Doe'])
+   * request.where('name', 'LIKE', 'John', 'AND')
+   * request.where('name', 'EQUAL', 'John', 'AND')
+   * ```
    */
   where(
     /** The attribute to filter on */
@@ -226,8 +279,10 @@ export default class PublitApiRequest<T> {
 
   /**
    * Load attributes defined by the resource but not part of the model
-   * Usage:
-   * .auxiliary('measurements')
+   *
+   * ```ts
+   * request.auxiliary('measurements')
+   * ```
    */
   auxiliary(
     /** The attribute to filter on */
@@ -238,9 +293,11 @@ export default class PublitApiRequest<T> {
 
   /**
    * Order results by a given attribute
-   * Usage:
-   * .orderBy('name', 'ASC')
-   * .orderBy('name', 'DESC')
+   *
+   * ```ts
+   * request.orderBy('name', 'ASC')
+   * request.orderBy('name', 'DESC')
+   * ```
    */
   orderBy(
     /** The attribute to order by */

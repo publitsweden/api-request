@@ -12,9 +12,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.isApiRequestError = void 0;
 /**
  * Class for making requests to Publit Core and similar API:s
+ *
+ * ```ts
+ * const works = await new PublitApiRequest<Work>("works")
+ *   .where("title", "LIKE", "lord of the")
+ *   .with("contributors")
+ *   .index()
+ * ```
+ *
  */
 class PublitApiRequest {
-    constructor(resource, options = {}) {
+    constructor(
+    /** Resource endpoint for this request */
+    resource, 
+    /** Options for this request instance */
+    options = {}) {
         this.options = Object.assign(Object.assign({}, PublitApiRequest.defaultOptions), options);
         const { origin, api, headers } = this.options;
         if (origin == null) {
@@ -29,6 +41,10 @@ class PublitApiRequest {
     }
     /**
      * Create a new ApiRequest from a given URL
+     *
+     * ```ts
+     * PublitApiRequest.fromUrl("https://api.publit.com/publishing/v2.0/works/1")
+     * ```
      */
     static fromUrl(url) {
         const request = new PublitApiRequest('');
@@ -52,9 +68,13 @@ class PublitApiRequest {
     }
     /**
      * Limit the number of results returned
+     *
      * Usage:
-     * .limit(10)
-     * .limit(10, 20)
+     *
+     * ```ts
+     * request.limit(10)
+     * request.limit(10, 20)
+     * ```
      */
     limit(
     /** Number of result to return */
@@ -66,30 +86,37 @@ class PublitApiRequest {
     }
     /**
      * Load relations for the requested object
+     *
      * E.g. .with('authors') or a deeper nested relation .with('authors.name'),
      * which will load parent relations as well.
-     * Usage:
-     * .with('authors')
-     * .with('authors.works')
+     *
+     * ```ts
+     * request.with('authors')
+     * request.with('authors.works')
+     * ```
      */
     with(relation) {
         return this.appendParam('with', relation);
     }
     /**
      * Allows for filtering through pre defined scopes, if any
-     * Usage:
-     * .scope('published')
+     *
+     * ```ts
+     * request.scope('published')
+     * ```
      */
     scope(method, qualifier) {
         return this.appendParam('scope', qualifier != null ? `${method};${qualifier}` : method);
     }
     /**
      * Allows for filtering through relations
-     * Usage:
-     *  .filter('authors', 'name', 'LIKE', 'John')
-     *  .filter('authors', 'name', 'LIKE', ['John', 'Doe'])
-     *  .filter('authors', 'name', 'LIKE', 'John', 'AND')
-     *  .filter('authors', 'name', 'EQUAL', 'John', 'AND')
+     *
+     * ```ts
+     * request.filter('authors', 'name', 'LIKE', 'John')
+     * request.filter('authors', 'name', 'LIKE', ['John', 'Doe'])
+     * request.filter('authors', 'name', 'LIKE', 'John', 'AND')
+     * request.filter('authors', 'name', 'EQUAL', 'John', 'AND')
+     * ```
      */
     has(
     /** The relation to filter on */
@@ -111,19 +138,23 @@ class PublitApiRequest {
     }
     /**
      * Group results by a given attribute
-     * Usage:
-     * .groupBy('work_id')
+     *
+     * ```ts
+     * request.groupBy('work_id')
+     * ```
      */
     groupBy(attribute) {
         return this.appendParam('group_by', attribute);
     }
     /**
      * Allows for filtering on attributes on the requested object
-     * Usage:
-     * .where('name', 'LIKE', 'John')
-     * .where('name', 'LIKE', ['John', 'Doe'])
-     * .where('name', 'LIKE', 'John', 'AND')
-     * .where('name', 'EQUAL', 'John', 'AND')
+     *
+     * ```ts
+     * request.where('name', 'LIKE', 'John')
+     * request.where('name', 'LIKE', ['John', 'Doe'])
+     * request.where('name', 'LIKE', 'John', 'AND')
+     * request.where('name', 'EQUAL', 'John', 'AND')
+     * ```
      */
     where(
     /** The attribute to filter on */
@@ -142,8 +173,10 @@ class PublitApiRequest {
     }
     /**
      * Load attributes defined by the resource but not part of the model
-     * Usage:
-     * .auxiliary('measurements')
+     *
+     * ```ts
+     * request.auxiliary('measurements')
+     * ```
      */
     auxiliary(
     /** The attribute to filter on */
@@ -152,9 +185,11 @@ class PublitApiRequest {
     }
     /**
      * Order results by a given attribute
-     * Usage:
-     * .orderBy('name', 'ASC')
-     * .orderBy('name', 'DESC')
+     *
+     * ```ts
+     * request.orderBy('name', 'ASC')
+     * request.orderBy('name', 'DESC')
+     * ```
      */
     orderBy(
     /** The attribute to order by */
@@ -279,6 +314,7 @@ class PublitApiRequest {
     }
 }
 exports.default = PublitApiRequest;
+/** Options used for all requests, unless overridden individually */
 PublitApiRequest.defaultOptions = {
     api: '',
     headers: {
