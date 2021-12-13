@@ -1,0 +1,28 @@
+{
+  "name": "publit-api-request",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A typescript library for making requests to Publit Core and similar API:s",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/publitsweden/api-request.git"
+  },
+  "homepage": "https://github.com/publitsweden/api-request#readme",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.3",
+    "jest": "^27.4.4",
+    "jest-fetch-mock": "^3.0.3",
+    "prettier": "^2.5.1",
+    "ts-jest": "^27.1.1",
+    "whatwg-fetch": "^3.6.2"
+  }
+}
