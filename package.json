@@ -1,6 +1,6 @@
 {
   "name": "@publit/api-request",
-  "version": "1.5.0",
+  "version": "2.0.0",
   "private": true,
   "description": "A typescript library for making requests to Publit Core and similar API:s",
   "main": "dist/index.js",
