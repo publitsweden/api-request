@@ -38,9 +38,9 @@ describe('Request', () => {
         PublitApiRequest_1.default.defaultOptions = {
             origin: 'https://api.publit.com',
             api: 'publishing/v2.0',
-            headers: {
+            headers: () => ({
                 'Content-Type': 'application/json',
-            },
+            }),
         };
         jest_fetch_mock_1.default.resetMocks();
     });
@@ -54,10 +54,10 @@ describe('Request', () => {
             expect(new PublitApiRequest_1.default('endpoint').url.pathname).toBe('/test/v3.5/endpoint');
         });
         it('should allow setting `headers` option', () => {
-            PublitApiRequest_1.default.defaultOptions.headers = {
+            PublitApiRequest_1.default.defaultOptions.headers = () => ({
                 'X-Test': 'test',
                 'X-Test2': 'test2',
-            };
+            });
             expect(new PublitApiRequest_1.default('endpoint').requestInit.headers).toEqual({
                 'X-Test': 'test',
                 'X-Test2': 'test2',
@@ -93,9 +93,9 @@ describe('Request', () => {
         });
         it('should allow overriding `headers` option', () => {
             expect(new PublitApiRequest_1.default('endpoint', {
-                headers: {
+                headers: () => ({
                     'X-Foo': 'bar',
-                },
+                }),
             }).requestInit.headers).toEqual({
                 'X-Foo': 'bar',
             });

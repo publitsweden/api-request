@@ -7,7 +7,7 @@ export type ApiRequestOptions = {
   /** API to use, e.g. `publishing/v2.0`. Will be prefixed to the path */
   api?: string
   /** Request headers for all requests */
-  headers?: Record<string, string>
+  headers?: () => Record<string, string>
   /** Callback for request errors */
   onError?: (error: ApiRequestError) => void
 }
@@ -76,9 +76,9 @@ export default class PublitApiRequest<T> {
   /** Options used for all requests, unless overridden individually */
   static defaultOptions: ApiRequestOptions = {
     api: '',
-    headers: {
+    headers: () => ({
       'Content-Type': 'application/json',
-    },
+    }),
   }
 
   /**
@@ -136,7 +136,7 @@ export default class PublitApiRequest<T> {
     this._url = new URL(`${origin}/${prefix}${resource}`)
 
     this.requestInit = {
-      headers,
+      headers: headers(),
       method: 'GET',
     }
   }

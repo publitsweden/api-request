@@ -17,9 +17,9 @@ describe('Request', () => {
     PublitApiRequest.defaultOptions = {
       origin: 'https://api.publit.com',
       api: 'publishing/v2.0',
-      headers: {
+      headers: () => ({
         'Content-Type': 'application/json',
-      },
+      }),
     }
     fetch.resetMocks()
   })
@@ -40,10 +40,10 @@ describe('Request', () => {
     })
 
     it('should allow setting `headers` option', () => {
-      PublitApiRequest.defaultOptions.headers = {
+      PublitApiRequest.defaultOptions.headers = () => ({
         'X-Test': 'test',
         'X-Test2': 'test2',
-      }
+      })
       expect(new PublitApiRequest('endpoint').requestInit.headers).toEqual({
         'X-Test': 'test',
         'X-Test2': 'test2',
@@ -97,9 +97,9 @@ describe('Request', () => {
     it('should allow overriding `headers` option', () => {
       expect(
         new PublitApiRequest('endpoint', {
-          headers: {
+          headers: () => ({
             'X-Foo': 'bar',
-          },
+          }),
         }).requestInit.headers
       ).toEqual({
         'X-Foo': 'bar',

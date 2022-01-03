@@ -35,7 +35,7 @@ class PublitApiRequest {
         const prefix = api === '' ? '' : `${api}/`;
         this._url = new URL(`${origin}/${prefix}${resource}`);
         this.requestInit = {
-            headers,
+            headers: headers(),
             method: 'GET',
         };
     }
@@ -317,9 +317,9 @@ exports.default = PublitApiRequest;
 /** Options used for all requests, unless overridden individually */
 PublitApiRequest.defaultOptions = {
     api: '',
-    headers: {
+    headers: () => ({
         'Content-Type': 'application/json',
-    },
+    }),
 };
 /** Type guard for API error objects */
 function isApiErrorObject(obj) {

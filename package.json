@@ -20,6 +20,7 @@
     "test": "jest",
     "clean": "rm -rf ./dist",
     "build": "npm run clean && tsc && npm run build-docs",
+    "dev": "tsc --watch",
     "publish-major": "npm version major",
     "publish-minor": "npm version minor",
     "build-docs": "typedoc src/index.ts --readme none"

@@ -7,7 +7,7 @@ export declare type ApiRequestOptions = {
     /** API to use, e.g. `publishing/v2.0`. Will be prefixed to the path */
     api?: string;
     /** Request headers for all requests */
-    headers?: Record<string, string>;
+    headers?: () => Record<string, string>;
     /** Callback for request errors */
     onError?: (error: ApiRequestError) => void;
 };
