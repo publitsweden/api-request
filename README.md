@@ -6,16 +6,16 @@ A typescript library for making requests to Core and similar API:s
 
 # Quick start
 
-Install this library as a dependency in you project. For now, use the URL for the repo to do this:
+Install this library as a dependency in you project.
 
 ```sh
-npm install github:publitsweden/api-request#semver:^2.0
+npm install @publitsweden/api-request
 ```
 
 Import the `PublitApiRequest` export from the package and use according to [the documentation](https://publitsweden.github.io/api-request/):
 
 ```ts
-import { PublitApiRequest } from '@publit/api-request'
+import { PublitApiRequest } from '@publitsweden/api-request'
 
 const works = await new PublitApiRequest<Work>('works')
   .where('title', 'LIKE', 'lord of the')
@@ -31,7 +31,7 @@ If you want to clone this repo for local development, and use your local copy in
 cd /path/to/api-request      # Move into the local package folder
 npm link                     # Create global link
 cd /path/project             # Move into project folder
-npm link @publit/api-request # Install package from link
+npm link @publitsweden/api-request # Install package from link
 ```
 
 The above commands will create a symlink in the global `node_modules` folder, and then use that symlink in your project, making it possible to make changes to your package locally and see them in your project immediately.
