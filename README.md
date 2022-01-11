@@ -46,6 +46,7 @@ Run the Jest unit tests with `npm test`
 
 When you want to publish a new version, you should first run a build and commit the resulting `/dist` and `/docs` folders:
 
+## Build
 ```sh
 npm run build
 git add .
@@ -53,6 +54,7 @@ git commit "Creates new build"
 git push
 ```
 
+## Create version
 Then create a new version, and push the new code and tag to GitHub:
 
 ```sh
@@ -60,3 +62,6 @@ npm run publish-major # If you want a new major version, or…
 npm run publish-minor # if you want a new minor version
 git push --tags
 ```
+
+## Publish release and package
+To publish a new package, we must create a new release in Github. This will trigger a workflow that publishes a new version of the package.
