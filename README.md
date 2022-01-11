@@ -17,7 +17,7 @@ Create or update the `.npmrc` in the same folder as the `package.json`.file in y
 //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 ```
 
-There are multiple ways to [authenticate to GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github) to be able to download packages. With the method in the snippet above, you need a Personal Access Token stored as an environment variable `GITHUB_TOKEN`, but there are other ways as well.
+There are multiple ways to [authenticate to GitHub](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#authenticating-to-github-packages) to be able to download packages. With the method in the snippet above, you need a Personal Access Token stored as an environment variable `GITHUB_TOKEN`, but there are other ways as well.
 
 ## Install the package
 
