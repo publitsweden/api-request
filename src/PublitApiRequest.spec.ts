@@ -268,6 +268,14 @@ describe('Request', () => {
         '?title=R%C3%B6da+Rummet&title_args=EQUAL%3BAND&author=August&author_args=EQUAL%3BAND'
       )
     })
+    it('should add a LIKE filter with multiple values', () => {
+      const r = new PublitApiRequest<{ title: string; author: string }>(
+        'endpoint'
+      ).where('title', 'LIKE', ['Röda Rummet', 'Blå Tåget'])
+      expect(r.url.search).toBe(
+        '?title=%25R%C3%B6da+Rummet%25%2C%25Bl%C3%A5+T%C3%A5get%25&title_args=LIKE%3BOR'
+      )
+    })
   })
   describe('auxiliary()', () => {
     it('should set an auxiliary attribute', () => {

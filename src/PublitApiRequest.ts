@@ -269,8 +269,13 @@ export default class PublitApiRequest<T> {
     /** Combinator for any further `where` filters */
     combinator: Combinator = 'OR'
   ): PublitApiRequest<T> {
-    value = Array.isArray(value) ? value.join(',') : value
-    value = operator === 'LIKE' ? `%${value}%` : value
+    if (operator === 'LIKE') {
+      value = Array.isArray(value)
+        ? value.map((v) => `%${v}%`).join(',')
+        : `%${value}%`
+    } else {
+      value = Array.isArray(value) ? value.join(',') : value
+    }
 
     this.url.searchParams.set(String(attribute), value)
     this.url.searchParams.set(`${attribute}_args`, `${operator};${combinator}`)
