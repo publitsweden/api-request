@@ -7,6 +7,7 @@ A typescript library for making requests to Core and similar API:s
 # Quick start
 
 ## Connect to registry
+
 Create or update the `.npmrc` in the same folder as the `package.json`.file in your project:
 
 ```
@@ -62,14 +63,16 @@ Run the Jest unit tests with `npm test`
 When you want to publish a new version, you should first run a build and commit the resulting `/dist` and `/docs` folders:
 
 ## Build
+
 ```sh
 npm run build
 git add .
-git commit "Creates new build"
+git commit -m "Creates new build"
 git push
 ```
 
 ## Create version
+
 Then create a new version, and push the new code and tag to GitHub:
 
 ```sh
@@ -79,4 +82,5 @@ git push --tags
 ```
 
 ## Publish release and package
+
 To publish a new package, we must create a new release in Github. This will trigger a workflow that publishes a new version of the package.
