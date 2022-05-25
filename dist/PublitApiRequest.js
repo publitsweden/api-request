@@ -271,7 +271,6 @@ class PublitApiRequest {
      * Performs the actual fetch request
      */
     fetch() {
-        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const response = yield fetch(this.url.toString(), this.requestInit);
@@ -282,8 +281,13 @@ class PublitApiRequest {
                 const error = {
                     message: 'Request failed',
                 };
-                (_b = (_a = this.options).onError) === null || _b === void 0 ? void 0 : _b.call(_a, error);
-                throw error;
+                if (this.options.onError != null) {
+                    yield this.options.onError(error);
+                    return;
+                }
+                else {
+                    throw error;
+                }
             }
         });
     }
@@ -291,7 +295,6 @@ class PublitApiRequest {
      * Handles the response from the API
      */
     handleResponse(response) {
-        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             if (response.ok) {
                 return response.json();
@@ -312,10 +315,15 @@ class PublitApiRequest {
                         error.type = json.Type;
                     }
                 }
-                catch (_c) { }
+                catch (_a) { }
             }
-            (_b = (_a = this.options).onError) === null || _b === void 0 ? void 0 : _b.call(_a, error);
-            throw error;
+            if (this.options.onError != null) {
+                yield this.options.onError(error);
+                return;
+            }
+            else {
+                throw error;
+            }
         });
     }
 }

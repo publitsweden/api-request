@@ -9,7 +9,7 @@ export declare type ApiRequestOptions = {
     /** Request headers for all requests */
     headers?: () => Record<string, string>;
     /** Callback for request errors */
-    onError?: (error: ApiRequestError) => void;
+    onError?: (error: ApiRequestError) => void | Promise<void>;
 };
 /** Combinator when using multiple `where` and `has` requests */
 export declare type Combinator = 'AND' | 'OR';

@@ -9,7 +9,7 @@ export type ApiRequestOptions = {
   /** Request headers for all requests */
   headers?: () => Record<string, string>
   /** Callback for request errors */
-  onError?: (error: ApiRequestError) => void
+  onError?: (error: ApiRequestError) => void | Promise<void>
 }
 
 /** Combinator when using multiple `where` and `has` requests */
@@ -387,8 +387,13 @@ export default class PublitApiRequest<T> {
       const error: ApiRequestError = {
         message: 'Request failed',
       }
-      this.options.onError?.(error)
-      throw error
+
+      if (this.options.onError != null) {
+        await this.options.onError(error)
+        return
+      } else {
+        throw error
+      }
     }
   }
 
@@ -419,8 +424,12 @@ export default class PublitApiRequest<T> {
       } catch {}
     }
 
-    this.options.onError?.(error)
-    throw error
+    if (this.options.onError != null) {
+      await this.options.onError(error)
+      return
+    } else {
+      throw error
+    }
   }
 }
 
