@@ -390,10 +390,9 @@ export default class PublitApiRequest<T> {
 
       if (this.options.onError != null) {
         await this.options.onError(error)
-        return
-      } else {
-        throw error
       }
+
+      throw error
     }
   }
 
@@ -426,10 +425,9 @@ export default class PublitApiRequest<T> {
 
     if (this.options.onError != null) {
       await this.options.onError(error)
-      return
-    } else {
-      throw error
     }
+
+    throw error
   }
 }
 

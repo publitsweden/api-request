@@ -283,11 +283,8 @@ class PublitApiRequest {
                 };
                 if (this.options.onError != null) {
                     yield this.options.onError(error);
-                    return;
                 }
-                else {
-                    throw error;
-                }
+                throw error;
             }
         });
     }
@@ -319,11 +316,8 @@ class PublitApiRequest {
             }
             if (this.options.onError != null) {
                 yield this.options.onError(error);
-                return;
             }
-            else {
-                throw error;
-            }
+            throw error;
         });
     }
 }

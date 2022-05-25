@@ -17,6 +17,7 @@
   "homepage": "https://github.com/publitsweden/api-request#readme",
   "scripts": {
     "test": "jest",
+    "test:watch": "jest --watch",
     "clean": "rm -rf ./dist",
     "build": "npm run clean && tsc && npm run build-docs",
     "dev": "tsc --watch",
