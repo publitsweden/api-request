@@ -346,7 +346,7 @@ export default class PublitApiRequest<T> {
   /**
    * Creates a new resource on the specified endpoint
    */
-  async store(payload?: unknown): Promise<T> {
+  async store<S = T[]>(payload?: unknown): Promise<S> {
     this.requestInit.method = 'POST'
     if (payload != null) {
       this.requestInit.body = JSON.stringify(payload)
@@ -357,7 +357,7 @@ export default class PublitApiRequest<T> {
   /**
    * Updates a single resource on the specified endpoint
    */
-  async update(id: string, payload?: unknown): Promise<T> {
+  async update<S = T[]>(id: string, payload?: unknown): Promise<S> {
     this.url.pathname += `/${id}`
     this.requestInit.method = 'PUT'
     if (payload != null) {

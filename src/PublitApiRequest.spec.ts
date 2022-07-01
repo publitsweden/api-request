@@ -355,7 +355,9 @@ describe('Request', () => {
     it('should make a store request', async () => {
       fetch.mockResponse(JSON.stringify({ id: '123321' }))
 
-      const request = await new PublitApiRequest<Thing>('things').store({
+      const request: Thing[] = await new PublitApiRequest<Thing>(
+        'things'
+      ).store({
         hello: 'goodbye',
       })
 
@@ -373,12 +375,11 @@ describe('Request', () => {
     it('should make an update request', async () => {
       fetch.mockResponse(JSON.stringify({ id: '123321' }))
 
-      const request = await new PublitApiRequest<Thing>('things').update(
-        '123321',
-        {
-          hello: 'goodbye',
-        }
-      )
+      const request: Thing[] = await new PublitApiRequest<Thing>(
+        'things'
+      ).update('123321', {
+        hello: 'goodbye',
+      })
 
       expect(request).toMatchObject({ id: '123321' })
       expect(fetch).toHaveBeenLastCalledWith(

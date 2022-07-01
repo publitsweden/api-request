@@ -198,11 +198,11 @@ export default class PublitApiRequest<T> {
     /**
      * Creates a new resource on the specified endpoint
      */
-    store(payload?: unknown): Promise<T>;
+    store<S = T[]>(payload?: unknown): Promise<S>;
     /**
      * Updates a single resource on the specified endpoint
      */
-    update(id: string, payload?: unknown): Promise<T>;
+    update<S = T[]>(id: string, payload?: unknown): Promise<S>;
     /**
      * Deletes a single resource on the specified endpoint
      */
