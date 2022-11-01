@@ -393,7 +393,7 @@ describe('Request', () => {
     it('should make an update request', async () => {
       fetch.mockResponse(JSON.stringify({ id: '123321' }))
 
-      const request: Thing[] = await new PublitApiRequest<Thing>(
+      const request: Thing[] = await new PublitApiRequest<Thing[]>(
         'things'
       ).update('123321', {
         hello: 'goodbye',
