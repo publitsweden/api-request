@@ -4,4 +4,5 @@ module.exports = {
     '^.+\\.tsx?$': 'ts-jest',
   },
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  testEnvironment: 'jsdom',
 }

@@ -352,7 +352,7 @@ describe('Request', () => {
     })
   })
   describe('store()', () => {
-    it('should make a store request', async () => {
+    it('should make a store request with object payload', async () => {
       fetch.mockResponse(JSON.stringify({ id: '123321' }))
 
       const request = await new PublitApiRequest<Thing>('things').store({
@@ -364,6 +364,24 @@ describe('Request', () => {
         'https://api.publit.com/publishing/v2.0/things',
         expect.objectContaining({
           body: JSON.stringify({ hello: 'goodbye' }),
+          method: 'POST',
+        })
+      )
+    })
+
+    it('should make a store request with form data payload', async () => {
+      fetch.mockResponse(JSON.stringify({ id: '123321' }))
+
+      const data = new FormData()
+      data.append('hello', 'goodbye')
+
+      const response = await new PublitApiRequest<Thing>('things').store(data)
+
+      expect(response).toMatchObject({ id: '123321' })
+      expect(fetch).toHaveBeenLastCalledWith(
+        'https://api.publit.com/publishing/v2.0/things',
+        expect.objectContaining({
+          body: data,
           method: 'POST',
         })
       )
@@ -385,6 +403,27 @@ describe('Request', () => {
         'https://api.publit.com/publishing/v2.0/things/123321',
         expect.objectContaining({
           body: JSON.stringify({ hello: 'goodbye' }),
+          method: 'PUT',
+        })
+      )
+    })
+
+    it('should make an update request with form data payload', async () => {
+      fetch.mockResponse(JSON.stringify({ id: '123321' }))
+
+      const data = new FormData()
+      data.append('hello', 'goodbye')
+
+      const response = await new PublitApiRequest<Thing>('things').update(
+        '123321',
+        data
+      )
+
+      expect(response).toMatchObject({ id: '123321' })
+      expect(fetch).toHaveBeenLastCalledWith(
+        'https://api.publit.com/publishing/v2.0/things/123321',
+        expect.objectContaining({
+          body: data,
           method: 'PUT',
         })
       )

@@ -278,7 +278,7 @@ describe('Request', () => {
         }));
     });
     describe('store()', () => {
-        it('should make a store request', () => __awaiter(void 0, void 0, void 0, function* () {
+        it('should make a store request with object payload', () => __awaiter(void 0, void 0, void 0, function* () {
             jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
             const request = yield new PublitApiRequest_1.default('things').store({
                 hello: 'goodbye',
@@ -286,6 +286,17 @@ describe('Request', () => {
             expect(request).toMatchObject({ id: '123321' });
             expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
                 body: JSON.stringify({ hello: 'goodbye' }),
+                method: 'POST',
+            }));
+        }));
+        it('should make a store request with form data payload', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
+            const data = new FormData();
+            data.append('hello', 'goodbye');
+            const response = yield new PublitApiRequest_1.default('things').store(data);
+            expect(response).toMatchObject({ id: '123321' });
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
+                body: data,
                 method: 'POST',
             }));
         }));
@@ -299,6 +310,17 @@ describe('Request', () => {
             expect(request).toMatchObject({ id: '123321' });
             expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321', expect.objectContaining({
                 body: JSON.stringify({ hello: 'goodbye' }),
+                method: 'PUT',
+            }));
+        }));
+        it('should make an update request with form data payload', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
+            const data = new FormData();
+            data.append('hello', 'goodbye');
+            const response = yield new PublitApiRequest_1.default('things').update('123321', data);
+            expect(response).toMatchObject({ id: '123321' });
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321', expect.objectContaining({
+                body: data,
                 method: 'PUT',
             }));
         }));

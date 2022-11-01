@@ -187,6 +187,7 @@ export default class PublitApiRequest<T> {
     attribute: keyof T, 
     /** Direction to order by */
     direction?: 'ASC' | 'DESC'): PublitApiRequest<T>;
+    setPayload(payload: FormData | Record<string, unknown>): void;
     /**
      * Lists all available resources on the specified endpoint
      */
@@ -198,11 +199,11 @@ export default class PublitApiRequest<T> {
     /**
      * Creates a new resource on the specified endpoint
      */
-    store(payload?: unknown): Promise<T>;
+    store<StoreT = T>(payload?: FormData | Record<string, unknown>): Promise<StoreT>;
     /**
      * Updates a single resource on the specified endpoint
      */
-    update(id: string, payload?: unknown): Promise<T>;
+    update(id: string, payload?: FormData | Record<string, unknown>): Promise<T>;
     /**
      * Deletes a single resource on the specified endpoint
      */
@@ -210,7 +211,7 @@ export default class PublitApiRequest<T> {
     /**
      * Performs the actual fetch request
      */
-    private fetch;
+    fetch<T2 = T>(): Promise<T2>;
     /**
      * Handles the response from the API
      */

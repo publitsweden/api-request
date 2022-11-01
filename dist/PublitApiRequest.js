@@ -208,6 +208,14 @@ class PublitApiRequest {
         }
         return this;
     }
+    setPayload(payload) {
+        if (payload instanceof FormData) {
+            this.requestInit.body = payload;
+        }
+        else if (payload != null) {
+            this.requestInit.body = JSON.stringify(payload);
+        }
+    }
     /**
      * Lists all available resources on the specified endpoint
      */
@@ -238,9 +246,7 @@ class PublitApiRequest {
     store(payload) {
         return __awaiter(this, void 0, void 0, function* () {
             this.requestInit.method = 'POST';
-            if (payload != null) {
-                this.requestInit.body = JSON.stringify(payload);
-            }
+            this.setPayload(payload);
             return this.fetch();
         });
     }
@@ -251,9 +257,7 @@ class PublitApiRequest {
         return __awaiter(this, void 0, void 0, function* () {
             this.url.pathname += `/${id}`;
             this.requestInit.method = 'PUT';
-            if (payload != null) {
-                this.requestInit.body = JSON.stringify(payload);
-            }
+            this.setPayload(payload);
             return this.fetch();
         });
     }
@@ -278,6 +282,7 @@ class PublitApiRequest {
                 return this.handleResponse(response);
             }
             catch (err) {
+                console.log(err);
                 const error = {
                     message: 'Request failed',
                 };
@@ -326,7 +331,7 @@ exports.default = PublitApiRequest;
 PublitApiRequest.defaultOptions = {
     api: '',
     headers: () => ({
-        'Content-Type': 'application/json',
+    // 'Content-Type': 'application/json',
     }),
 };
 /** Type guard for API error objects */

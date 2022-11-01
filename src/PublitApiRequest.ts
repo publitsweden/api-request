@@ -77,7 +77,7 @@ export default class PublitApiRequest<T> {
   static defaultOptions: ApiRequestOptions = {
     api: '',
     headers: () => ({
-      'Content-Type': 'application/json',
+      // 'Content-Type': 'application/json',
     }),
   }
 
@@ -108,11 +108,11 @@ export default class PublitApiRequest<T> {
   }
 
   /** Options passed via the constructor */
-  options: ApiRequestOptions
+  public options: ApiRequestOptions
   /** Options passed to the actual fetch request */
-  requestInit: RequestInit
+  public requestInit: RequestInit
   /** Fetch response object, available after the request is done */
-  response?: Response
+  public response?: Response
 
   constructor(
     /** Resource endpoint for this request */
@@ -318,6 +318,14 @@ export default class PublitApiRequest<T> {
     return this
   }
 
+  setPayload(payload: FormData | Record<string, unknown>) {
+    if (payload instanceof FormData) {
+      this.requestInit.body = payload
+    } else if (payload != null) {
+      this.requestInit.body = JSON.stringify(payload)
+    }
+  }
+
   /**
    * Lists all available resources on the specified endpoint
    */
@@ -346,23 +354,24 @@ export default class PublitApiRequest<T> {
   /**
    * Creates a new resource on the specified endpoint
    */
-  async store(payload?: unknown): Promise<T> {
+  async store<StoreT = T>(
+    payload?: FormData | Record<string, unknown>
+  ): Promise<StoreT> {
     this.requestInit.method = 'POST'
-    if (payload != null) {
-      this.requestInit.body = JSON.stringify(payload)
-    }
+    this.setPayload(payload)
     return this.fetch()
   }
 
   /**
    * Updates a single resource on the specified endpoint
    */
-  async update(id: string, payload?: unknown): Promise<T> {
+  async update(
+    id: string,
+    payload?: FormData | Record<string, unknown>
+  ): Promise<T> {
     this.url.pathname += `/${id}`
     this.requestInit.method = 'PUT'
-    if (payload != null) {
-      this.requestInit.body = JSON.stringify(payload)
-    }
+    this.setPayload(payload)
     return this.fetch()
   }
 
@@ -378,12 +387,13 @@ export default class PublitApiRequest<T> {
   /**
    * Performs the actual fetch request
    */
-  private async fetch<T2 = T>(): Promise<T2> {
+  async fetch<T2 = T>(): Promise<T2> {
     try {
       const response = await fetch(this.url.toString(), this.requestInit)
       this.response = response
       return this.handleResponse(response)
     } catch (err) {
+      console.log(err)
       const error: ApiRequestError = {
         message: 'Request failed',
       }
