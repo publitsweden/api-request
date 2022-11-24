@@ -199,11 +199,11 @@ export default class PublitApiRequest<T> {
     /**
      * Creates a new resource on the specified endpoint
      */
-    store<S = T[]>(payload?: unknown): Promise<S>;
+    store<StoreT = T>(payload?: FormData | Record<string, unknown>): Promise<StoreT>;
     /**
      * Updates a single resource on the specified endpoint
      */
-    update<S = T[]>(id: string, payload?: unknown): Promise<S>;
+    update(id: string, payload?: FormData | Record<string, unknown>): Promise<T>;
     /**
      * Deletes a single resource on the specified endpoint
      */

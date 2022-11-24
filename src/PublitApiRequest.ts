@@ -76,9 +76,7 @@ export default class PublitApiRequest<T> {
   /** Options used for all requests, unless overridden individually */
   static defaultOptions: ApiRequestOptions = {
     api: '',
-    headers: () => ({
-      // 'Content-Type': 'application/json',
-    }),
+    headers: () => ({}),
   }
 
   /**
@@ -389,6 +387,13 @@ export default class PublitApiRequest<T> {
    */
   async fetch<T2 = T>(): Promise<T2> {
     try {
+      // When the payload is a FormData object, the Content-Type header
+      // should be set to `multipart/form-data`, and the browser will
+      // automatically set that. Otherwise, we need to set it manually.
+      if (!(this.requestInit.body instanceof FormData)) {
+        this.requestInit.headers['Content-Type'] = 'application/json'
+      }
+
       const response = await fetch(this.url.toString(), this.requestInit)
       this.response = response
       return this.handleResponse(response)

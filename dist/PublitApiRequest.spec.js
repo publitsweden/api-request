@@ -38,9 +38,7 @@ describe('Request', () => {
         PublitApiRequest_1.default.defaultOptions = {
             origin: 'https://api.publit.com',
             api: 'publishing/v2.0',
-            headers: () => ({
-                'Content-Type': 'application/json',
-            }),
+            headers: () => ({}),
         };
         jest_fetch_mock_1.default.resetMocks();
     });
@@ -71,9 +69,7 @@ describe('Request', () => {
         it('should set `requestInit` property', () => {
             expect(new PublitApiRequest_1.default('endpoint').requestInit).toEqual({
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: {},
             });
         });
         it('should allow overriding `origin` option', () => {
@@ -344,11 +340,45 @@ describe('Request', () => {
         yield request.index();
         expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
             method: 'GET',
-            headers: {
+            headers: expect.objectContaining({
                 'X-Custom-Header': 'custom-value',
-            },
+            }),
         }));
     }));
+    describe('fetch()', () => {
+        it('should set correct content-type with object payload', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            const request = new PublitApiRequest_1.default('things');
+            request.setPayload({ hello: 'world' });
+            yield request.store();
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
+                headers: expect.objectContaining({
+                    'Content-Type': 'application/json',
+                }),
+            }));
+        }));
+        it('should set correct content-type with FormData payload', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            const request = new PublitApiRequest_1.default('things');
+            const payload = new FormData();
+            payload.append('hello', 'world');
+            request.setPayload(payload);
+            yield request.store();
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
+                headers: {},
+            }));
+        }));
+        it('should set correct content-type with no payload', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            const request = new PublitApiRequest_1.default('things');
+            yield request.store();
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
+                headers: expect.objectContaining({
+                    'Content-Type': 'application/json',
+                }),
+            }));
+        }));
+    });
     describe('error handling', () => {
         const handleError = jest.fn();
         it('should throw error on 401 response', () => __awaiter(void 0, void 0, void 0, function* () {

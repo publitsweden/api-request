@@ -17,9 +17,7 @@ describe('Request', () => {
     PublitApiRequest.defaultOptions = {
       origin: 'https://api.publit.com',
       api: 'publishing/v2.0',
-      headers: () => ({
-        'Content-Type': 'application/json',
-      }),
+      headers: () => ({}),
     }
     fetch.resetMocks()
   })
@@ -61,9 +59,7 @@ describe('Request', () => {
     it('should set `requestInit` property', () => {
       expect(new PublitApiRequest('endpoint').requestInit).toEqual({
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {},
       })
     })
 
@@ -463,11 +459,63 @@ describe('Request', () => {
       'https://api.publit.com/publishing/v2.0/things',
       expect.objectContaining({
         method: 'GET',
-        headers: {
+        headers: expect.objectContaining({
           'X-Custom-Header': 'custom-value',
-        },
+        }),
       })
     )
+  })
+
+  describe('fetch()', () => {
+    it('should set correct content-type with object payload', async () => {
+      fetch.mockResponse('{}')
+
+      const request = new PublitApiRequest<Thing>('things')
+      request.setPayload({ hello: 'world' })
+      await request.store()
+
+      expect(fetch).toHaveBeenLastCalledWith(
+        'https://api.publit.com/publishing/v2.0/things',
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+          }),
+        })
+      )
+    })
+
+    it('should set correct content-type with FormData payload', async () => {
+      fetch.mockResponse('{}')
+
+      const request = new PublitApiRequest<Thing>('things')
+      const payload = new FormData()
+      payload.append('hello', 'world')
+      request.setPayload(payload)
+      await request.store()
+
+      expect(fetch).toHaveBeenLastCalledWith(
+        'https://api.publit.com/publishing/v2.0/things',
+        expect.objectContaining({
+          headers: {},
+        })
+      )
+    })
+
+    it('should set correct content-type with no payload', async () => {
+      fetch.mockResponse('{}')
+
+      const request = new PublitApiRequest<Thing>('things')
+      await request.store()
+
+      expect(fetch).toHaveBeenLastCalledWith(
+        'https://api.publit.com/publishing/v2.0/things',
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+          }),
+        })
+      )
+    })
   })
 
   describe('error handling', () => {
