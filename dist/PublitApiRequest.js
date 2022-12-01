@@ -108,16 +108,6 @@ class PublitApiRequest {
     scope(method, qualifier) {
         return this.appendParam('scope', qualifier != null ? `${method};${qualifier}` : method);
     }
-    /**
-     * Allows for filtering through relations
-     *
-     * ```ts
-     * request.filter('authors', 'name', 'LIKE', 'John')
-     * request.filter('authors', 'name', 'LIKE', ['John', 'Doe'])
-     * request.filter('authors', 'name', 'LIKE', 'John', 'AND')
-     * request.filter('authors', 'name', 'EQUAL', 'John', 'AND')
-     * ```
-     */
     has(
     /** The relation to filter on */
     relation, 
@@ -129,9 +119,12 @@ class PublitApiRequest {
     value, // FIXME: how can this be better typed?
     /** Combinator for any further `has` filters */
     combinator = 'OR') {
+        if (attribute == null) {
+            return this.appendParam('has', String(relation));
+        }
         const values = Array.isArray(value) ? value : [value];
         values.forEach((value) => {
-            const newHas = `${relation}(${attribute};${operator};${operator === 'LIKE' ? `%${value}%` : value});${combinator}`;
+            const newHas = `${String(relation)}(${attribute};${operator};${operator === 'LIKE' ? `%${value}%` : value});${combinator}`;
             this.appendParam('has', newHas);
         });
         return this;
