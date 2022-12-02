@@ -128,15 +128,7 @@ export default class PublitApiRequest<T> {
      */
     has<R extends keyof T>(
     /** The relation to filter on */
-    relation: R, 
-    /** The attribute to filter on */
-    attribute: string, // TODO: how can this be better typed?
-    /** Operator to use for filtering */
-    operator: Operator, 
-    /** Value to filter on */
-    value: string | string[], // FIXME: how can this be better typed?
-    /** Combinator for any further `has` filters */
-    combinator?: Combinator): PublitApiRequest<T>;
+    relation: R): PublitApiRequest<T>;
     /**
      * Group results by a given attribute
      *

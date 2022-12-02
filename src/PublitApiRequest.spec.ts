@@ -218,6 +218,23 @@ describe('Request', () => {
         '?has=works%28title%3BEQUAL%3BR%C3%B6da+Rummet%29%3BOR'
       )
     })
+    it('should add relation filter with no value', () => {
+      const r = new PublitApiRequest<{ work: { title: string } }>(
+        'endpoint'
+      ).has('work')
+      expect(r.url.search).toBe('?has=work')
+    })
+    it('should add relation filter with no value and another relation with value', () => {
+      const r = new PublitApiRequest<{
+        work: { title: string }
+        isbn: { isbn: string }
+      }>('endpoint')
+        .has('isbn')
+        .has('work', 'title', 'EQUAL', 'Röda Rummet')
+      expect(r.url.search).toBe(
+        '?has=isbn%2Cwork%28title%3BEQUAL%3BR%C3%B6da+Rummet%29%3BOR'
+      )
+    })
   })
   describe('groupBy()', () => {
     it('should set single groupBy', () => {

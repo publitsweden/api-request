@@ -216,19 +216,27 @@ export default class PublitApiRequest<T> {
    */
   has<R extends keyof T>(
     /** The relation to filter on */
+    relation: R
+  ): PublitApiRequest<T>
+  has<R extends keyof T>(
+    /** The relation to filter on */
     relation: R,
     /** The attribute to filter on */
-    attribute: string, // TODO: how can this be better typed?
+    attribute?: string, // TODO: how can this be better typed?
     /** Operator to use for filtering */
-    operator: Operator,
+    operator?: Operator,
     /** Value to filter on */
-    value: string | string[], // FIXME: how can this be better typed?
+    value?: string | string[], // FIXME: how can this be better typed?
     /** Combinator for any further `has` filters */
     combinator: Combinator = 'OR'
   ): PublitApiRequest<T> {
+    if (attribute == null) {
+      return this.appendParam('has', String(relation))
+    }
+
     const values = Array.isArray(value) ? value : [value]
     values.forEach((value) => {
-      const newHas = `${relation}(${attribute};${operator};${
+      const newHas = `${String(relation)}(${attribute};${operator};${
         operator === 'LIKE' ? `%${value}%` : value
       });${combinator}`
       this.appendParam('has', newHas)
