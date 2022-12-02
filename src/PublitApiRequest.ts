@@ -216,10 +216,6 @@ export default class PublitApiRequest<T> {
    */
   has<R extends keyof T>(
     /** The relation to filter on */
-    relation: R
-  ): PublitApiRequest<T>
-  has<R extends keyof T>(
-    /** The relation to filter on */
     relation: R,
     /** The attribute to filter on */
     attribute?: string, // TODO: how can this be better typed?
