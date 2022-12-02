@@ -1,6 +1,6 @@
 {
   "name": "@publitsweden/api-request",
-  "version": "7.2.0",
+  "version": "7.3.0",
   "description": "A typescript library for making requests to Publit Core and similar API:s",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
