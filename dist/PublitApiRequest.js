@@ -108,6 +108,16 @@ class PublitApiRequest {
     scope(method, qualifier) {
         return this.appendParam('scope', qualifier != null ? `${method};${qualifier}` : method);
     }
+    /**
+     * Allows for filtering through relations
+     *
+     * ```ts
+     * request.filter('authors', 'name', 'LIKE', 'John')
+     * request.filter('authors', 'name', 'LIKE', ['John', 'Doe'])
+     * request.filter('authors', 'name', 'LIKE', 'John', 'AND')
+     * request.filter('authors', 'name', 'EQUAL', 'John', 'AND')
+     * ```
+     */
     has(
     /** The relation to filter on */
     relation, 
