@@ -62,6 +62,27 @@ type ApiErrorObject = {
 }
 
 /**
+ * External error object returned by Interzone Api
+ *
+ * There is currently a naming discrepancy between the Core API and
+ * Interzone API where the Interzone API omits the plural 's' on the
+ * Errors parameter.
+ *
+ * This type just changes the name of the parameter.
+ *
+ * TODO: Remove as soon as this is fixed in the Interzone API
+ */
+type InterzoneApiErrorObject = Omit<ApiErrorObject, 'Errors'> & {
+  /** Array of error messages from Interzone Api*/
+  Error: {
+    /** Error message */
+    Info: string
+    /** Error type */
+    Type: string
+  }[]
+}
+
+/**
  * Class for making requests to Publit Core and similar API:s
  *
  * ```ts
@@ -433,9 +454,12 @@ export default class PublitApiRequest<T> {
       error.message = 'Unauthorized'
     } else {
       try {
-        const json = await response.json()
+        let json = await response.json()
 
-        if (isApiErrorObject(json)) {
+        if (
+          isApiErrorObject(json) ||
+          isAnApiErrorObjectButWithErrorsPropertyMisspelled(json)
+        ) {
           error.message = json.CombinedInfo
           error.type = json.Type
         }
@@ -469,5 +493,23 @@ export function isApiRequestError(obj: unknown): obj is ApiRequestError {
     typeof obj === 'object' &&
     typeof (obj as ApiRequestError).message === 'string' &&
     typeof (obj as ApiRequestError).status === 'number'
+  )
+}
+
+function isAnApiErrorObjectButWithErrorsPropertyMisspelled(
+  obj: unknown
+): obj is InterzoneApiErrorObject {
+  const isProbablyAnApiErrorObject =
+    obj != null &&
+    typeof obj === 'object' &&
+    typeof (obj as ApiErrorObject).Code === 'number' &&
+    typeof (obj as ApiErrorObject).Type === 'string' &&
+    typeof (obj as ApiErrorObject).CombinedInfo === 'string'
+
+  // Check if the "Errors" property name might be misspelled
+  return (
+    isProbablyAnApiErrorObject &&
+    obj.hasOwnProperty('Error') &&
+    !obj.hasOwnProperty('Errors')
   )
 }
