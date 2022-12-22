@@ -454,7 +454,7 @@ export default class PublitApiRequest<T> {
       error.message = 'Unauthorized'
     } else {
       try {
-        let json = await response.json()
+        const json = await response.json()
 
         if (
           isApiErrorObject(json) ||

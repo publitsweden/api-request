@@ -320,7 +320,7 @@ class PublitApiRequest {
             }
             else {
                 try {
-                    let json = yield response.json();
+                    const json = yield response.json();
                     if (isApiErrorObject(json) ||
                         isAnApiErrorObjectButWithErrorsPropertyMisspelled(json)) {
                         error.message = json.CombinedInfo;
