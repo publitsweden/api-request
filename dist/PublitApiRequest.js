@@ -321,7 +321,8 @@ class PublitApiRequest {
             else {
                 try {
                     const json = yield response.json();
-                    if (isApiErrorObject(json)) {
+                    if (isApiErrorObject(json) ||
+                        isAnApiErrorObjectButWithErrorsPropertyMisspelled(json)) {
                         error.message = json.CombinedInfo;
                         error.type = json.Type;
                     }
@@ -358,3 +359,14 @@ function isApiRequestError(obj) {
         typeof obj.status === 'number');
 }
 exports.isApiRequestError = isApiRequestError;
+function isAnApiErrorObjectButWithErrorsPropertyMisspelled(obj) {
+    const isProbablyAnApiErrorObject = obj != null &&
+        typeof obj === 'object' &&
+        typeof obj.Code === 'number' &&
+        typeof obj.Type === 'string' &&
+        typeof obj.CombinedInfo === 'string';
+    // Check if the "Errors" property name might be misspelled
+    return (isProbablyAnApiErrorObject &&
+        obj.hasOwnProperty('Error') &&
+        !obj.hasOwnProperty('Errors'));
+}
