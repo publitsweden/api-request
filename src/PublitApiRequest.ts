@@ -341,6 +341,17 @@ export default class PublitApiRequest<T> {
     return this
   }
 
+  /**
+   * Specify a subset of attributes to return in the response
+   *
+   * ```ts
+   * request.only('name', 'description')
+   * ```
+   */
+  only(...attributes: (keyof T)[]): PublitApiRequest<T> {
+    return this.appendParam('only', attributes.join(','))
+  }
+
   setPayload(payload: FormData | Record<string, unknown>) {
     if (payload instanceof FormData) {
       this.requestInit.body = payload
