@@ -187,6 +187,14 @@ export default class PublitApiRequest<T> {
     attribute: keyof T, 
     /** Direction to order by */
     direction?: 'ASC' | 'DESC'): PublitApiRequest<T>;
+    /**
+     * Specify a subset of attributes to return in the response
+     *
+     * ```ts
+     * request.only('name', 'description')
+     * ```
+     */
+    only(...attributes: (keyof T)[]): PublitApiRequest<T>;
     setPayload(payload: FormData | Record<string, unknown>): void;
     /**
      * Lists all available resources on the specified endpoint

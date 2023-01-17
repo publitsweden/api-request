@@ -211,6 +211,16 @@ class PublitApiRequest {
         }
         return this;
     }
+    /**
+     * Specify a subset of attributes to return in the response
+     *
+     * ```ts
+     * request.only('name', 'description')
+     * ```
+     */
+    only(...attributes) {
+        return this.appendParam('only', attributes.join(','));
+    }
     setPayload(payload) {
         if (payload instanceof FormData) {
             this.requestInit.body = payload;

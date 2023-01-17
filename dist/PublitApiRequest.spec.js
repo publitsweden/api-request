@@ -341,6 +341,39 @@ describe('Request', () => {
             }));
         }));
     });
+    describe('only()', () => {
+        it('should add only query parameter', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
+            const request = yield new PublitApiRequest_1.default('things')
+                .only('id')
+                .show('123321');
+            expect(request).toMatchObject({ id: '123321' });
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321?only=id', expect.objectContaining({
+                method: 'GET',
+            }));
+        }));
+        it('should add multiple only query parameters in separate calls', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
+            const request = yield new PublitApiRequest_1.default('things')
+                .only('id')
+                .only('status')
+                .show('123321');
+            expect(request).toMatchObject({ id: '123321' });
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321?only=id%2Cstatus', expect.objectContaining({
+                method: 'GET',
+            }));
+        }));
+        it('should add multiple only query parameters in one call', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
+            const request = yield new PublitApiRequest_1.default('things')
+                .only('id', 'status')
+                .show('123321');
+            expect(request).toMatchObject({ id: '123321' });
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321?only=id%2Cstatus', expect.objectContaining({
+                method: 'GET',
+            }));
+        }));
+    });
     it('should allow changing RequestInit before fetching', () => __awaiter(void 0, void 0, void 0, function* () {
         jest_fetch_mock_1.default.mockResponse('{}');
         const request = new PublitApiRequest_1.default('things');
