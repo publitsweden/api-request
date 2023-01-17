@@ -461,6 +461,57 @@ describe('Request', () => {
     })
   })
 
+  describe('only()', () => {
+    it('should add only query parameter', async () => {
+      fetch.mockResponse(JSON.stringify({ id: '123321' }))
+
+      const request = await new PublitApiRequest<Thing>('things')
+        .only('id')
+        .show('123321')
+
+      expect(request).toMatchObject({ id: '123321' })
+      expect(fetch).toHaveBeenLastCalledWith(
+        'https://api.publit.com/publishing/v2.0/things/123321?only=id',
+        expect.objectContaining({
+          method: 'GET',
+        })
+      )
+    })
+
+    it('should add multiple only query parameters in separate calls', async () => {
+      fetch.mockResponse(JSON.stringify({ id: '123321' }))
+
+      const request = await new PublitApiRequest<Thing>('things')
+        .only('id')
+        .only('status')
+        .show('123321')
+
+      expect(request).toMatchObject({ id: '123321' })
+      expect(fetch).toHaveBeenLastCalledWith(
+        'https://api.publit.com/publishing/v2.0/things/123321?only=id%2Cstatus',
+        expect.objectContaining({
+          method: 'GET',
+        })
+      )
+    })
+
+    it('should add multiple only query parameters in one call', async () => {
+      fetch.mockResponse(JSON.stringify({ id: '123321' }))
+
+      const request = await new PublitApiRequest<Thing>('things')
+        .only('id', 'status')
+        .show('123321')
+
+      expect(request).toMatchObject({ id: '123321' })
+      expect(fetch).toHaveBeenLastCalledWith(
+        'https://api.publit.com/publishing/v2.0/things/123321?only=id%2Cstatus',
+        expect.objectContaining({
+          method: 'GET',
+        })
+      )
+    })
+  })
+
   it('should allow changing RequestInit before fetching', async () => {
     fetch.mockResponse('{}')
 
