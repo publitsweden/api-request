@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -292,6 +296,25 @@ describe('Request', () => {
             expect(request).toMatchObject({ id: '123321' });
             expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
                 body: JSON.stringify({ hello: 'goodbye' }),
+                method: 'POST',
+            }));
+        }));
+        it('should make a store request with array payload', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
+            const request = yield new PublitApiRequest_1.default('things').store([
+                {
+                    hello: 'goodbye',
+                },
+                { goodbye: 'hello' },
+            ]);
+            expect(request).toMatchObject({ id: '123321' });
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
+                body: JSON.stringify([
+                    {
+                        hello: 'goodbye',
+                    },
+                    { goodbye: 'hello' },
+                ]),
                 method: 'POST',
             }));
         }));
