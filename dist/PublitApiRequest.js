@@ -22,23 +22,6 @@ exports.isApiRequestError = void 0;
  *
  */
 class PublitApiRequest {
-    constructor(
-    /** Resource endpoint for this request */
-    resource, 
-    /** Options for this request instance */
-    options = {}) {
-        this.options = Object.assign(Object.assign({}, PublitApiRequest.defaultOptions), options);
-        const { origin, api, headers } = this.options;
-        if (origin == null) {
-            throw new Error('No api host provided');
-        }
-        const prefix = api === '' ? '' : `${api}/`;
-        this._url = new URL(`${origin}/${prefix}${resource}`);
-        this.requestInit = {
-            headers: headers(),
-            method: 'GET',
-        };
-    }
     /**
      * Create a new ApiRequest from a given URL
      *
@@ -56,6 +39,23 @@ class PublitApiRequest {
     }
     set url(url) {
         this._url = new URL(url.toString());
+    }
+    constructor(
+    /** Resource endpoint for this request */
+    resource, 
+    /** Options for this request instance */
+    options = {}) {
+        this.options = Object.assign(Object.assign({}, PublitApiRequest.defaultOptions), options);
+        const { origin, api, headers } = this.options;
+        if (origin == null) {
+            throw new Error('No api host provided');
+        }
+        const prefix = api === '' ? '' : `${api}/`;
+        this._url = new URL(`${origin}/${prefix}${resource}`);
+        this.requestInit = {
+            headers: headers(),
+            method: 'GET',
+        };
     }
     /**
      * Append a parameter to the URL. If the parameter already exists,

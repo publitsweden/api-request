@@ -1,7 +1,7 @@
 /**
  * Request options
  */
-export declare type ApiRequestOptions = {
+export type ApiRequestOptions = {
     /** Host origin to make request against, including protocol and port */
     origin?: string;
     /** API to use, e.g. `publishing/v2.0`. Will be prefixed to the path */
@@ -12,13 +12,13 @@ export declare type ApiRequestOptions = {
     onError?: (error: ApiRequestError) => void | Promise<void>;
 };
 /** Combinator when using multiple `where` and `has` requests */
-export declare type Combinator = 'AND' | 'OR';
+export type Combinator = 'AND' | 'OR';
 /** Operator for `where` and `has` requests */
-export declare type Operator = 'EQUAL' | 'LIKE' | 'NOT_EQUAL';
+export type Operator = 'EQUAL' | 'LIKE' | 'NOT_EQUAL';
 /**
  * Whenever a request returns a list of objects, it will follow this format
  */
-export declare type ApiListResponse<T = unknown> = {
+export type ApiListResponse<T = unknown> = {
     /** Array of matching objects */
     data: T[];
     /** Total number of matches */
@@ -29,7 +29,7 @@ export declare type ApiListResponse<T = unknown> = {
 /**
  * Internal error object returned by ApiRequest
  */
-export declare type ApiRequestError = {
+export type ApiRequestError = {
     /** HTTP status code */
     status?: number;
     /** Error type */
@@ -37,6 +37,7 @@ export declare type ApiRequestError = {
     /** Error message */
     message: string;
 };
+type Payload = FormData | unknown;
 /**
  * Class for making requests to Publit Core and similar API:s
  *
@@ -195,7 +196,7 @@ export default class PublitApiRequest<T> {
      * ```
      */
     only(...attributes: (keyof T)[]): PublitApiRequest<T>;
-    setPayload(payload: FormData | Record<string, unknown>): void;
+    setPayload(payload: Payload): void;
     /**
      * Lists all available resources on the specified endpoint
      */
@@ -207,11 +208,11 @@ export default class PublitApiRequest<T> {
     /**
      * Creates a new resource on the specified endpoint
      */
-    store<StoreT = T>(payload?: FormData | Record<string, unknown>): Promise<StoreT>;
+    store<StoreT = T>(payload?: Payload): Promise<StoreT>;
     /**
      * Updates a single resource on the specified endpoint
      */
-    update(id: string, payload?: FormData | Record<string, unknown>): Promise<T>;
+    update(id: string, payload?: Payload): Promise<T>;
     /**
      * Deletes a single resource on the specified endpoint
      */
@@ -227,3 +228,4 @@ export default class PublitApiRequest<T> {
 }
 /** Type guard for internal API request errors */
 export declare function isApiRequestError(obj: unknown): obj is ApiRequestError;
+export {};
