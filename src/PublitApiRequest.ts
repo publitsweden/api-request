@@ -82,6 +82,8 @@ type InterzoneApiErrorObject = Omit<ApiErrorObject, 'Errors'> & {
   }[]
 }
 
+type Payload = FormData | unknown
+
 /**
  * Class for making requests to Publit Core and similar API:s
  *
@@ -352,7 +354,7 @@ export default class PublitApiRequest<T> {
     return this.appendParam('only', attributes.join(','))
   }
 
-  setPayload(payload: FormData | Record<string, unknown>) {
+  setPayload(payload: Payload) {
     if (payload instanceof FormData) {
       this.requestInit.body = payload
     } else if (payload != null) {
@@ -388,9 +390,7 @@ export default class PublitApiRequest<T> {
   /**
    * Creates a new resource on the specified endpoint
    */
-  async store<StoreT = T>(
-    payload?: FormData | Record<string, unknown>
-  ): Promise<StoreT> {
+  async store<StoreT = T>(payload?: Payload): Promise<StoreT> {
     this.requestInit.method = 'POST'
     this.setPayload(payload)
     return this.fetch()
@@ -399,10 +399,7 @@ export default class PublitApiRequest<T> {
   /**
    * Updates a single resource on the specified endpoint
    */
-  async update(
-    id: string,
-    payload?: FormData | Record<string, unknown>
-  ): Promise<T> {
+  async update(id: string, payload?: Payload): Promise<T> {
     this.url.pathname += `/${id}`
     this.requestInit.method = 'PUT'
     this.setPayload(payload)
