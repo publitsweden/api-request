@@ -37,6 +37,7 @@ export declare type ApiRequestError = {
     /** Error message */
     message: string;
 };
+declare type Payload = FormData | unknown;
 /**
  * Class for making requests to Publit Core and similar API:s
  *
@@ -195,7 +196,7 @@ export default class PublitApiRequest<T> {
      * ```
      */
     only(...attributes: (keyof T)[]): PublitApiRequest<T>;
-    setPayload(payload: FormData | Record<string, unknown>): void;
+    setPayload(payload: Payload): void;
     /**
      * Lists all available resources on the specified endpoint
      */
@@ -207,11 +208,11 @@ export default class PublitApiRequest<T> {
     /**
      * Creates a new resource on the specified endpoint
      */
-    store<StoreT = T>(payload?: FormData | Record<string, unknown>): Promise<StoreT>;
+    store<StoreT = T>(payload?: Payload): Promise<StoreT>;
     /**
      * Updates a single resource on the specified endpoint
      */
-    update(id: string, payload?: FormData | Record<string, unknown>): Promise<T>;
+    update(id: string, payload?: Payload): Promise<T>;
     /**
      * Deletes a single resource on the specified endpoint
      */
@@ -227,3 +228,4 @@ export default class PublitApiRequest<T> {
 }
 /** Type guard for internal API request errors */
 export declare function isApiRequestError(obj: unknown): obj is ApiRequestError;
+export {};

@@ -295,6 +295,25 @@ describe('Request', () => {
                 method: 'POST',
             }));
         }));
+        it('should make a store request with array payload', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
+            const request = yield new PublitApiRequest_1.default('things').store([
+                {
+                    hello: 'goodbye',
+                },
+                { goodbye: 'hello' },
+            ]);
+            expect(request).toMatchObject({ id: '123321' });
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
+                body: JSON.stringify([
+                    {
+                        hello: 'goodbye',
+                    },
+                    { goodbye: 'hello' },
+                ]),
+                method: 'POST',
+            }));
+        }));
         it('should make a store request with form data payload', () => __awaiter(void 0, void 0, void 0, function* () {
             jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
             const data = new FormData();
