@@ -384,6 +384,33 @@ describe('Request', () => {
       )
     })
 
+    it('should make a store request with array payload', async () => {
+      fetch.mockResponse(JSON.stringify({ id: '123321' }))
+
+      const request: Thing[] = await new PublitApiRequest<Thing>(
+        'things'
+      ).store([
+        {
+          hello: 'goodbye',
+        },
+        { goodbye: 'hello' },
+      ])
+
+      expect(request).toMatchObject({ id: '123321' })
+      expect(fetch).toHaveBeenLastCalledWith(
+        'https://api.publit.com/publishing/v2.0/things',
+        expect.objectContaining({
+          body: JSON.stringify([
+            {
+              hello: 'goodbye',
+            },
+            { goodbye: 'hello' },
+          ]),
+          method: 'POST',
+        })
+      )
+    })
+
     it('should make a store request with form data payload', async () => {
       fetch.mockResponse(JSON.stringify({ id: '123321' }))
 
