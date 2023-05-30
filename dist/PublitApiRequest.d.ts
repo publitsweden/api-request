@@ -15,16 +15,19 @@ export type ApiRequestOptions = {
 export type Combinator = 'AND' | 'OR';
 /** Operator for `where` and `has` requests */
 export type Operator = 'EQUAL' | 'LIKE' | 'NOT_EQUAL';
-/**
- * Whenever a request returns a list of objects, it will follow this format
- */
+type GroupedCount<T> = {
+    count: string;
+} & Partial<T>;
+type Count<T> = number | GroupedCount<T>[];
 export type ApiListResponse<T = unknown> = {
     /** Array of matching objects */
     data: T[];
     /** Total number of matches */
-    count: number;
-    /** URL for the next paginated result page, which we rarely use */
+    count: Count<T>;
     next?: string;
+};
+export type ApiCountResponse<T = unknown> = {
+    count: Count<T>;
 };
 /**
  * Internal error object returned by ApiRequest
@@ -64,6 +67,7 @@ export default class PublitApiRequest<T> {
      * URL object for the request
      */
     private _url;
+    private resource;
     get url(): URL;
     set url(url: string | URL);
     /** Options passed via the constructor */
@@ -202,6 +206,10 @@ export default class PublitApiRequest<T> {
      */
     index(): Promise<ApiListResponse<T>>;
     /**
+     *
+     */
+    count(): Promise<ApiCountResponse<T>>;
+    /**
      * Retrieves a single resource from the specified endpoint
      */
     show(id?: string): Promise<T>;
@@ -226,6 +234,8 @@ export default class PublitApiRequest<T> {
      */
     private handleResponse;
 }
+/** Type guard for count */
+export declare function isGroupedCount<T>(obj: unknown): obj is GroupedCount<T>[];
 /** Type guard for internal API request errors */
 export declare function isApiRequestError(obj: unknown): obj is ApiRequestError;
 export {};

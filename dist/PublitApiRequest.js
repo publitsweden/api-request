@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isApiRequestError = void 0;
+exports.isApiRequestError = exports.isGroupedCount = void 0;
 /**
  * Class for making requests to Publit Core and similar API:s
  *
@@ -46,12 +46,13 @@ class PublitApiRequest {
     /** Options for this request instance */
     options = {}) {
         this.options = Object.assign(Object.assign({}, PublitApiRequest.defaultOptions), options);
+        this.resource = resource;
         const { origin, api, headers } = this.options;
         if (origin == null) {
             throw new Error('No api host provided');
         }
         const prefix = api === '' ? '' : `${api}/`;
-        this._url = new URL(`${origin}/${prefix}${resource}`);
+        this._url = new URL(`${origin}/${prefix}${this.resource}`);
         this.requestInit = {
             headers: headers(),
             method: 'GET',
@@ -234,12 +235,18 @@ class PublitApiRequest {
      */
     index() {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.fetch();
-            return Object.assign(Object.assign({}, response), { 
-                // If `groupBy` has been used, the returned `count` is an array
-                count: Array.isArray(response.count)
-                    ? response.count.length
-                    : response.count });
+            return this.fetch();
+        });
+    }
+    /**
+     *
+     */
+    count() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { api } = this.options;
+            const prefix = api === '' ? '' : `${api}/`;
+            this._url.pathname = `${prefix}count/${this.resource}`;
+            return this.fetch();
         });
     }
     /**
@@ -352,6 +359,13 @@ PublitApiRequest.defaultOptions = {
     api: '',
     headers: () => ({}),
 };
+/** Type guard for count */
+function isGroupedCount(obj) {
+    return (Array.isArray(obj) &&
+        obj.every((item) => typeof item === 'object' &&
+            typeof item.count === 'string'));
+}
+exports.isGroupedCount = isGroupedCount;
 /** Type guard for API error objects */
 function isApiErrorObject(obj) {
     return (obj != null &&

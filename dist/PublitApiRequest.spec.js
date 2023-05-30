@@ -277,6 +277,50 @@ describe('Request', () => {
             }));
         }));
     });
+    describe.only('count()', () => {
+        it('should make a request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({
+                count: 5,
+            }));
+            const request = yield new PublitApiRequest_1.default('things').count();
+            expect(request).toMatchObject({ count: 5 });
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/count/things', expect.objectContaining({
+                method: 'GET',
+            }));
+        }));
+        it('should make a request with groupBy', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({
+                count: [
+                    {
+                        status: 'published',
+                        count: '20',
+                    },
+                    {
+                        status: 'draft',
+                        count: '63',
+                    },
+                ],
+            }));
+            const response = yield new PublitApiRequest_1.default('things')
+                .groupBy('status')
+                .count();
+            expect(response).toMatchObject({
+                count: [
+                    {
+                        status: 'published',
+                        count: '20',
+                    },
+                    {
+                        status: 'draft',
+                        count: '63',
+                    },
+                ],
+            });
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/count/things?group_by=status', expect.objectContaining({
+                method: 'GET',
+            }));
+        }));
+    });
     describe('show()', () => {
         it('should make a show request', () => __awaiter(void 0, void 0, void 0, function* () {
             jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
