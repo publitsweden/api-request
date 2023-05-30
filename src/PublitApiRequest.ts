@@ -18,16 +18,24 @@ export type Combinator = 'AND' | 'OR'
 /** Operator for `where` and `has` requests */
 export type Operator = 'EQUAL' | 'LIKE' | 'NOT_EQUAL'
 
-/**
- * Whenever a request returns a list of objects, it will follow this format
- */
+// If groupBy is used, `count` will be an array of objects with a subset
+// of properties from <T>, and a `count` property
+type GroupedCount<T> = {
+  count: string
+} & Partial<T>
+
+type Count<T> = number | GroupedCount<T>[]
+
 export type ApiListResponse<T = unknown> = {
   /** Array of matching objects */
   data: T[]
   /** Total number of matches */
-  count: number
-  /** URL for the next paginated result page, which we rarely use */
+  count: Count<T>
   next?: string
+}
+
+export type ApiCountResponse<T = unknown> = {
+  count: Count<T>
 }
 
 /**
@@ -120,6 +128,8 @@ export default class PublitApiRequest<T> {
    */
   private _url: URL
 
+  private resource: string
+
   public get url(): URL {
     return this._url
   }
@@ -146,6 +156,8 @@ export default class PublitApiRequest<T> {
       ...options,
     }
 
+    this.resource = resource
+
     const { origin, api, headers } = this.options
 
     if (origin == null) {
@@ -154,7 +166,7 @@ export default class PublitApiRequest<T> {
 
     const prefix = api === '' ? '' : `${api}/`
 
-    this._url = new URL(`${origin}/${prefix}${resource}`)
+    this._url = new URL(`${origin}/${prefix}${this.resource}`)
 
     this.requestInit = {
       headers: headers(),
@@ -366,15 +378,19 @@ export default class PublitApiRequest<T> {
    * Lists all available resources on the specified endpoint
    */
   async index(): Promise<ApiListResponse<T>> {
-    const response = await this.fetch<ApiListResponse<T>>()
+    return this.fetch<ApiListResponse<T>>()
+  }
 
-    return {
-      ...response,
-      // If `groupBy` has been used, the returned `count` is an array
-      count: Array.isArray(response.count)
-        ? response.count.length
-        : response.count,
-    }
+  /**
+   *
+   */
+  async count(): Promise<ApiCountResponse<T>> {
+    const { api } = this.options
+    const prefix = api === '' ? '' : `${api}/`
+
+    this._url.pathname = `${prefix}count/${this.resource}`
+
+    return this.fetch<ApiCountResponse<T>>()
   }
 
   /**
@@ -480,6 +496,18 @@ export default class PublitApiRequest<T> {
 
     throw error
   }
+}
+
+/** Type guard for count */
+export function isGroupedCount<T>(obj: unknown): obj is GroupedCount<T>[] {
+  return (
+    Array.isArray(obj) &&
+    obj.every(
+      (item) =>
+        typeof item === 'object' &&
+        typeof (item as GroupedCount<T>).count === 'string'
+    )
+  )
 }
 
 /** Type guard for API error objects */

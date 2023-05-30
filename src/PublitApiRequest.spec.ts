@@ -1,4 +1,5 @@
 import PublitApiRequest, {
+  ApiCountResponse,
   ApiListResponse,
   isApiRequestError,
 } from './PublitApiRequest'
@@ -343,6 +344,65 @@ describe('Request', () => {
       expect(request).toMatchObject({ count: 0, data: [{ id: '123321' }] })
       expect(fetch).toHaveBeenLastCalledWith(
         'https://api.publit.com/publishing/v2.0/things?has=isbn%28isbn%3BEQUAL%3B9789186053512%29%3BOR&status=published&status_args=EQUAL%3BOR&with=work%2Cwork.contributor_works%2Cwork.contributor_works.contributor%2Cisbn%2Cthumbnail_files',
+        expect.objectContaining({
+          method: 'GET',
+        })
+      )
+    })
+  })
+  describe.only('count()', () => {
+    it('should make a request', async () => {
+      fetch.mockResponse(
+        JSON.stringify({
+          count: 5,
+        } as ApiListResponse<Thing>)
+      )
+
+      const request = await new PublitApiRequest<Thing>('things').count()
+
+      expect(request).toMatchObject({ count: 5 })
+      expect(fetch).toHaveBeenLastCalledWith(
+        'https://api.publit.com/publishing/v2.0/count/things',
+        expect.objectContaining({
+          method: 'GET',
+        })
+      )
+    })
+
+    it('should make a request with groupBy', async () => {
+      fetch.mockResponse(
+        JSON.stringify({
+          count: [
+            {
+              status: 'published',
+              count: '20',
+            },
+            {
+              status: 'draft',
+              count: '63',
+            },
+          ],
+        } as ApiCountResponse<Thing>)
+      )
+
+      const response = await new PublitApiRequest<Thing>('things')
+        .groupBy('status')
+        .count()
+
+      expect(response).toMatchObject({
+        count: [
+          {
+            status: 'published',
+            count: '20',
+          },
+          {
+            status: 'draft',
+            count: '63',
+          },
+        ],
+      })
+      expect(fetch).toHaveBeenLastCalledWith(
+        'https://api.publit.com/publishing/v2.0/count/things?group_by=status',
         expect.objectContaining({
           method: 'GET',
         })
