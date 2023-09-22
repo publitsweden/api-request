@@ -15,10 +15,10 @@ export type ApiRequestOptions = {
 export type Combinator = 'AND' | 'OR';
 /** Operator for `where` and `has` requests */
 export type Operator = 'EQUAL' | 'LIKE' | 'NOT_EQUAL';
-type GroupedCount<T> = {
+export type GroupedCount<T> = {
     count: string;
 } & Partial<T>;
-type Count<T> = number | GroupedCount<T>[];
+export type Count<T> = number | GroupedCount<T>[];
 export type ApiListResponse<T = unknown> = {
     /** Array of matching objects */
     data: T[];

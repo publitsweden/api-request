@@ -353,12 +353,12 @@ class PublitApiRequest {
         });
     }
 }
-exports.default = PublitApiRequest;
 /** Options used for all requests, unless overridden individually */
 PublitApiRequest.defaultOptions = {
     api: '',
     headers: () => ({}),
 };
+exports.default = PublitApiRequest;
 /** Type guard for count */
 function isGroupedCount(obj) {
     return (Array.isArray(obj) &&
