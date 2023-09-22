@@ -350,7 +350,7 @@ describe('Request', () => {
       )
     })
   })
-  describe.only('count()', () => {
+  describe('count()', () => {
     it('should make a request', async () => {
       fetch.mockResponse(
         JSON.stringify({

@@ -20,11 +20,11 @@ export type Operator = 'EQUAL' | 'LIKE' | 'NOT_EQUAL'
 
 // If groupBy is used, `count` will be an array of objects with a subset
 // of properties from <T>, and a `count` property
-type GroupedCount<T> = {
+export type GroupedCount<T> = {
   count: string
 } & Partial<T>
 
-type Count<T> = number | GroupedCount<T>[]
+export type Count<T> = number | GroupedCount<T>[]
 
 export type ApiListResponse<T = unknown> = {
   /** Array of matching objects */

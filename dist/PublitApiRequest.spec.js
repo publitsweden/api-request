@@ -277,7 +277,7 @@ describe('Request', () => {
             }));
         }));
     });
-    describe.only('count()', () => {
+    describe('count()', () => {
         it('should make a request', () => __awaiter(void 0, void 0, void 0, function* () {
             jest_fetch_mock_1.default.mockResponse(JSON.stringify({
                 count: 5,
