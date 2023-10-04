@@ -16,7 +16,14 @@ export type ApiRequestOptions = {
 export type Combinator = 'AND' | 'OR'
 
 /** Operator for `where` and `has` requests */
-export type Operator = 'EQUAL' | 'LIKE' | 'NOT_EQUAL'
+export type Operator =
+  | 'EQUAL'
+  | 'LIKE'
+  | 'NOT_EQUAL'
+  | 'GREATER'
+  | 'GREATER_EQUAL'
+  | 'LESS'
+  | 'LESS_EQUAL'
 
 // If groupBy is used, `count` will be an array of objects with a subset
 // of properties from <T>, and a `count` property

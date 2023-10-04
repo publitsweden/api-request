@@ -14,7 +14,7 @@ export type ApiRequestOptions = {
 /** Combinator when using multiple `where` and `has` requests */
 export type Combinator = 'AND' | 'OR';
 /** Operator for `where` and `has` requests */
-export type Operator = 'EQUAL' | 'LIKE' | 'NOT_EQUAL';
+export type Operator = 'EQUAL' | 'LIKE' | 'NOT_EQUAL' | 'GREATER' | 'GREATER_EQUAL' | 'LESS' | 'LESS_EQUAL';
 export type GroupedCount<T> = {
     count: string;
 } & Partial<T>;
