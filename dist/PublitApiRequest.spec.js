@@ -233,6 +233,12 @@ describe('Request', () => {
             const r = new PublitApiRequest_1.default('endpoint').where('title', 'LIKE', ['Röda Rummet', 'Blå Tåget']);
             expect(r.url.search).toBe('?title=%25R%C3%B6da+Rummet%25%2C%25Bl%C3%A5+T%C3%A5get%25&title_args=LIKE%3BOR');
         });
+        it('should add multiple values for same attribute', () => {
+            const r = new PublitApiRequest_1.default('endpoint')
+                .where('created_at', 'GREATER_EQUAL', '2020-01-01', 'AND')
+                .where('created_at', 'LESS_EQUAL', '2020-01-31', 'AND');
+            expect(r.url.search).toBe('?created_at=2020-01-01%2C2020-01-31&created_at_args=GREATER_EQUAL%3BAND%2CLESS_EQUAL%3BAND');
+        });
     });
     describe('auxiliary()', () => {
         it('should set an auxiliary attribute', () => {
