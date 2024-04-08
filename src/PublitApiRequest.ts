@@ -365,10 +365,10 @@ export default class PublitApiRequest<T> {
     /** Direction to order by */
     direction?: 'ASC' | 'DESC'
   ): PublitApiRequest<T> {
-    this.url.searchParams.set('order_by', String(attribute))
+    this.appendParam('order_by', String(attribute))
 
     if (direction != null) {
-      this.url.searchParams.set('order_dir', direction)
+      this.appendParam('order_dir', direction)
     }
     return this
   }

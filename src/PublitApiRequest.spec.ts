@@ -316,18 +316,34 @@ describe('Request', () => {
     })
   })
   describe('orderBy()', () => {
-    it('should set sort order', () => {
+    it('should set single sort order', () => {
       const r = new PublitApiRequest<{ title: string }>('endpoint').orderBy(
         'title'
       )
       expect(r.url.search).toBe('?order_by=title')
     })
-    it('should set sort order and direction', () => {
+    it('should set single sort order and direction', () => {
       const r = new PublitApiRequest<{ title: string }>('endpoint').orderBy(
         'title',
         'DESC'
       )
       expect(r.url.search).toBe('?order_by=title&order_dir=DESC')
+    })
+    it('should set multiple sort orders', () => {
+      const r = new PublitApiRequest<{ title: string; author: string }>(
+        'endpoint'
+      )
+        .orderBy('title')
+        .orderBy('author')
+      expect(r.url.search).toBe('?order_by=title%2Cauthor')
+    })
+    it('should set multiple sort orders with directions', () => {
+      const r = new PublitApiRequest<{ title: string; author: string }>(
+        'endpoint'
+      )
+        .orderBy('title', 'DESC')
+        .orderBy('author', 'ASC')
+      expect(r.url.search).toBe('?order_by=title%2Cauthor&order_dir=DESC%2CASC')
     })
   })
   describe('index()', () => {
