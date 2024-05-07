@@ -10,6 +10,7 @@ export type ApiRequestOptions = {
   headers?: () => Record<string, string>
   /** Callback for request errors */
   onError?: (error: ApiRequestError) => void | Promise<void>
+  debug?: boolean
 }
 
 /** Combinator when using multiple `where` and `has` requests */
@@ -115,6 +116,7 @@ export default class PublitApiRequest<T> {
   static defaultOptions: ApiRequestOptions = {
     api: '',
     headers: () => ({}),
+    debug: false,
   }
 
   /**
@@ -191,6 +193,11 @@ export default class PublitApiRequest<T> {
       param,
       currentValue === null ? value : [currentValue, value].join(',')
     )
+    return this
+  }
+
+  debug() {
+    this.options.debug = true
     return this
   }
 
@@ -461,7 +468,44 @@ export default class PublitApiRequest<T> {
         this.requestInit.headers['Content-Type'] = 'application/json'
       }
 
+      if (this.options.debug) {
+        const message: string[] = []
+        message.push('SENDING API-REQUEST:')
+        message.push(`URL: ${this.url.toString()}`)
+        message.push(`Method: ${this.requestInit.method}`)
+        message.push(`Headers: ${JSON.stringify(this.requestInit.headers)}`)
+
+        if (this.requestInit.body instanceof FormData) {
+          // FormData objects are not easily logged
+          const formData = this.requestInit.body
+          const data = Object.fromEntries(
+            Array.from(formData.keys()).map((key) => [
+              key,
+              formData.getAll(key).length > 1
+                ? formData.getAll(key)
+                : formData.get(key),
+            ])
+          )
+          message.push(`Body: ${JSON.stringify(data)}`)
+        } else if (this.requestInit.body != null) {
+          message.push(`Body: ${this.requestInit.body.toString()}`)
+        }
+
+        console.log(message.join('\n'))
+      }
+
       const response = await fetch(this.url.toString(), this.requestInit)
+
+      if (this.options.debug) {
+        const message: string[] = []
+        message.push('RECEIVED API-RESPONSE:')
+        message.push(`Request URL: ${this.url.toString()}`)
+        message.push(`Status: ${response.status}`)
+        message.push(`StatusText: ${response.statusText}`)
+        message.push(`Headers: ${JSON.stringify(response.headers)}`)
+        console.log(message.join('\n'))
+      }
+
       this.response = response
       return this.handleResponse(response)
     } catch (err) {

@@ -830,6 +830,86 @@ describe('Request', () => {
       })
     })
   })
+
+  describe('debugging', () => {
+    let consoleLogSpy: jest.SpyInstance
+    beforeEach(() => {
+      // Mock console.log
+      consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
+    })
+
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    it('should print request data for index request', async () => {
+      fetch.mockResponse('{}')
+      await new PublitApiRequest<Thing>('things').debug().index()
+
+      expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot()
+      expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot()
+    })
+
+    it('should print request data for show request', async () => {
+      fetch.mockResponse('{}')
+      await new PublitApiRequest<Thing>('things').debug().show('123')
+
+      expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot()
+      expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot()
+    })
+
+    it('should print request data for store request', async () => {
+      fetch.mockResponse('{}')
+      await new PublitApiRequest<Thing>('things').debug().store({})
+
+      expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot()
+      expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot()
+    })
+
+    it('should output form data', async () => {
+      fetch.mockResponse('{}')
+      const formData = new FormData()
+      formData.append('hello', 'world')
+      formData.append('hello', 'goodbye')
+      formData.append('goodbye', 'world')
+      await new PublitApiRequest<Thing>('things').debug().store(formData)
+
+      expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot()
+      expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot()
+    })
+
+    it('should print request data for update request', async () => {
+      fetch.mockResponse('{}')
+      await new PublitApiRequest<Thing>('things').debug().update('123', {})
+
+      expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot()
+      expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot()
+    })
+
+    it('should print request data for delete request', async () => {
+      fetch.mockResponse('{}')
+      await new PublitApiRequest<Thing>('things').debug().delete('123')
+
+      expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot()
+      expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot()
+    })
+
+    it('should set global debug option', async () => {
+      PublitApiRequest.defaultOptions.debug = true
+      fetch.mockResponse('{}')
+      await new PublitApiRequest<Thing>('things').index()
+
+      expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot()
+      expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot()
+    })
+
+    it('should not output debug data when debugging is off', async () => {
+      fetch.mockResponse('{}')
+      await new PublitApiRequest<Thing>('things').index()
+
+      expect(consoleLogSpy).not.toHaveBeenCalled()
+    })
+  })
 })
 
 describe('isApiRequestError()', () => {

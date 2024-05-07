@@ -1,0 +1,109 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Request debugging should output form data 1`] = `
+"SENDING API-REQUEST:
+URL: https://api.publit.com/publishing/v2.0/things
+Method: POST
+Headers: {}
+Body: {"hello":["world","goodbye"],"goodbye":"world"}"
+`;
+
+exports[`Request debugging should output form data 2`] = `
+"RECEIVED API-RESPONSE:
+Request URL: https://api.publit.com/publishing/v2.0/things
+Status: 200
+StatusText: OK
+Headers: {}"
+`;
+
+exports[`Request debugging should print request data for delete request 1`] = `
+"SENDING API-REQUEST:
+URL: https://api.publit.com/publishing/v2.0/things/123
+Method: DELETE
+Headers: {"Content-Type":"application/json"}"
+`;
+
+exports[`Request debugging should print request data for delete request 2`] = `
+"RECEIVED API-RESPONSE:
+Request URL: https://api.publit.com/publishing/v2.0/things/123
+Status: 200
+StatusText: OK
+Headers: {}"
+`;
+
+exports[`Request debugging should print request data for index request 1`] = `
+"SENDING API-REQUEST:
+URL: https://api.publit.com/publishing/v2.0/things
+Method: GET
+Headers: {"Content-Type":"application/json"}"
+`;
+
+exports[`Request debugging should print request data for index request 2`] = `
+"RECEIVED API-RESPONSE:
+Request URL: https://api.publit.com/publishing/v2.0/things
+Status: 200
+StatusText: OK
+Headers: {}"
+`;
+
+exports[`Request debugging should print request data for show request 1`] = `
+"SENDING API-REQUEST:
+URL: https://api.publit.com/publishing/v2.0/things/123
+Method: GET
+Headers: {"Content-Type":"application/json"}"
+`;
+
+exports[`Request debugging should print request data for show request 2`] = `
+"RECEIVED API-RESPONSE:
+Request URL: https://api.publit.com/publishing/v2.0/things/123
+Status: 200
+StatusText: OK
+Headers: {}"
+`;
+
+exports[`Request debugging should print request data for store request 1`] = `
+"SENDING API-REQUEST:
+URL: https://api.publit.com/publishing/v2.0/things
+Method: POST
+Headers: {"Content-Type":"application/json"}
+Body: {}"
+`;
+
+exports[`Request debugging should print request data for store request 2`] = `
+"RECEIVED API-RESPONSE:
+Request URL: https://api.publit.com/publishing/v2.0/things
+Status: 200
+StatusText: OK
+Headers: {}"
+`;
+
+exports[`Request debugging should print request data for update request 1`] = `
+"SENDING API-REQUEST:
+URL: https://api.publit.com/publishing/v2.0/things/123
+Method: PUT
+Headers: {"Content-Type":"application/json"}
+Body: {}"
+`;
+
+exports[`Request debugging should print request data for update request 2`] = `
+"RECEIVED API-RESPONSE:
+Request URL: https://api.publit.com/publishing/v2.0/things/123
+Status: 200
+StatusText: OK
+Headers: {}"
+`;
+
+exports[`Request debugging should set global debug option 1`] = `
+"SENDING API-REQUEST:
+URL: https://api.publit.com/publishing/v2.0/things
+Method: GET
+Headers: {"Content-Type":"application/json"}"
+`;
+
+exports[`Request debugging should set global debug option 2`] = `
+"RECEIVED API-RESPONSE:
+Request URL: https://api.publit.com/publishing/v2.0/things
+Status: 200
+StatusText: OK
+Headers: {}"
+`;
