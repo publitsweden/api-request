@@ -10,6 +10,7 @@ export type ApiRequestOptions = {
     headers?: () => Record<string, string>;
     /** Callback for request errors */
     onError?: (error: ApiRequestError) => void | Promise<void>;
+    debug?: boolean;
 };
 /** Combinator when using multiple `where` and `has` requests */
 export type Combinator = 'AND' | 'OR';
@@ -86,6 +87,7 @@ export default class PublitApiRequest<T> {
      * the new value will be appended to the existing value.
      */
     private appendParam;
+    debug(): this;
     /**
      * Limit the number of results returned
      *

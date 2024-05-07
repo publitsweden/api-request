@@ -67,6 +67,10 @@ class PublitApiRequest {
         this.url.searchParams.set(param, currentValue === null ? value : [currentValue, value].join(','));
         return this;
     }
+    debug() {
+        this.options.debug = true;
+        return this;
+    }
     /**
      * Limit the number of results returned
      *
@@ -311,7 +315,38 @@ class PublitApiRequest {
                 if (!(this.requestInit.body instanceof FormData)) {
                     this.requestInit.headers['Content-Type'] = 'application/json';
                 }
+                if (this.options.debug) {
+                    const message = [];
+                    message.push('SENDING API-REQUEST:');
+                    message.push(`URL: ${this.url.toString()}`);
+                    message.push(`Method: ${this.requestInit.method}`);
+                    message.push(`Headers: ${JSON.stringify(this.requestInit.headers)}`);
+                    if (this.requestInit.body instanceof FormData) {
+                        // FormData objects are not easily logged
+                        const formData = this.requestInit.body;
+                        const data = Object.fromEntries(Array.from(formData.keys()).map((key) => [
+                            key,
+                            formData.getAll(key).length > 1
+                                ? formData.getAll(key)
+                                : formData.get(key),
+                        ]));
+                        message.push(`Body: ${JSON.stringify(data)}`);
+                    }
+                    else if (this.requestInit.body != null) {
+                        message.push(`Body: ${this.requestInit.body.toString()}`);
+                    }
+                    console.log(message.join('\n'));
+                }
                 const response = yield fetch(this.url.toString(), this.requestInit);
+                if (this.options.debug) {
+                    const message = [];
+                    message.push('RECEIVED API-RESPONSE:');
+                    message.push(`Request URL: ${this.url.toString()}`);
+                    message.push(`Status: ${response.status}`);
+                    message.push(`StatusText: ${response.statusText}`);
+                    message.push(`Headers: ${JSON.stringify(response.headers)}`);
+                    console.log(message.join('\n'));
+                }
                 this.response = response;
                 return this.handleResponse(response);
             }
@@ -365,6 +400,7 @@ class PublitApiRequest {
 PublitApiRequest.defaultOptions = {
     api: '',
     headers: () => ({}),
+    debug: false,
 };
 exports.default = PublitApiRequest;
 /** Type guard for count */

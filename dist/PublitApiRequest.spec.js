@@ -620,6 +620,68 @@ describe('Request', () => {
             });
         }));
     });
+    describe('debugging', () => {
+        let consoleLogSpy;
+        beforeEach(() => {
+            // Mock console.log
+            consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
+        });
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+        it('should print request data for index request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            yield new PublitApiRequest_1.default('things').debug().index();
+            expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot();
+            expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot();
+        }));
+        it('should print request data for show request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            yield new PublitApiRequest_1.default('things').debug().show('123');
+            expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot();
+            expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot();
+        }));
+        it('should print request data for store request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            yield new PublitApiRequest_1.default('things').debug().store({});
+            expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot();
+            expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot();
+        }));
+        it('should output form data', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            const formData = new FormData();
+            formData.append('hello', 'world');
+            formData.append('hello', 'goodbye');
+            formData.append('goodbye', 'world');
+            yield new PublitApiRequest_1.default('things').debug().store(formData);
+            expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot();
+            expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot();
+        }));
+        it('should print request data for update request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            yield new PublitApiRequest_1.default('things').debug().update('123', {});
+            expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot();
+            expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot();
+        }));
+        it('should print request data for delete request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            yield new PublitApiRequest_1.default('things').debug().delete('123');
+            expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot();
+            expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot();
+        }));
+        it('should set global debug option', () => __awaiter(void 0, void 0, void 0, function* () {
+            PublitApiRequest_1.default.defaultOptions.debug = true;
+            jest_fetch_mock_1.default.mockResponse('{}');
+            yield new PublitApiRequest_1.default('things').index();
+            expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot();
+            expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot();
+        }));
+        it('should not output debug data when debugging is off', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            yield new PublitApiRequest_1.default('things').index();
+            expect(consoleLogSpy).not.toHaveBeenCalled();
+        }));
+    });
 });
 describe('isApiRequestError()', () => {
     it('should determine if object is an api request error', () => {
