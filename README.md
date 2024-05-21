@@ -60,7 +60,8 @@ Run the Jest unit tests with `npm test`
 
 # Publish a new version
 
-When you want to publish a new version, you should first run a build and commit the resulting `/dist` and `/docs` folders:
+When you want to publish a new version, you should first merge the PR to main and then checkout the main branch locally.
+When this is done run a build and commit the resulting `/dist` and `/docs` folders directly to the main branch:
 
 ## Build
 
