@@ -9,7 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isApiRequestError = exports.isGroupedCount = void 0;
+exports.isGroupedCount = isGroupedCount;
+exports.isApiRequestError = isApiRequestError;
 /**
  * Class for making requests to Publit Core and similar API:s
  *
@@ -409,7 +410,6 @@ function isGroupedCount(obj) {
         obj.every((item) => typeof item === 'object' &&
             typeof item.count === 'string'));
 }
-exports.isGroupedCount = isGroupedCount;
 /** Type guard for API error objects */
 function isApiErrorObject(obj) {
     return (obj != null &&
@@ -426,7 +426,6 @@ function isApiRequestError(obj) {
         typeof obj.message === 'string' &&
         typeof obj.status === 'number');
 }
-exports.isApiRequestError = isApiRequestError;
 function isAnApiErrorObjectButWithErrorsPropertyMisspelled(obj) {
     const isProbablyAnApiErrorObject = obj != null &&
         typeof obj === 'object' &&
