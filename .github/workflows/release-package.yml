@@ -11,7 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.2.2
       - name: Setup Node.js environment
-        uses: actions/setup-node@v4.2.0
+        uses: actions/setup-node@v6.1.0
       - run: npm ci # Clean install
       - run: npm test
 
@@ -25,7 +25,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.2.2
       - name: Setup Node.js environment
-        uses: actions/setup-node@v4.2.0
+        uses: actions/setup-node@v6.1.0
         with:
           registry-url: https://npm.pkg.github.com/
       - run: npm ci # Clean install
