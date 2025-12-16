@@ -1,6 +1,7 @@
 import PublitApiRequest, {
   ApiCountResponse,
   ApiListResponse,
+  ApiSumResponse,
   isApiRequestError,
 } from './PublitApiRequest'
 import fetch from 'jest-fetch-mock'
@@ -433,6 +434,66 @@ describe('Request', () => {
       )
     })
   })
+
+  describe('sum()', () => {
+    it('should make a request', async () => {
+      fetch.mockResponse(
+        JSON.stringify({
+          sum: 5,
+        } as ApiSumResponse<Thing>)
+      )
+
+      const request = await new PublitApiRequest<Thing>('things').sum('revenue')
+
+      expect(request).toMatchObject({ sum: 5 })
+      expect(fetch).toHaveBeenLastCalledWith(
+        'https://api.publit.com/publishing/v2.0/sum/things;revenue',
+        expect.objectContaining({
+          method: 'GET',
+        })
+      )
+    })
+
+    it('should make a request with groupBy', async () => {
+      const mockResponse: ApiSumResponse<Thing> = {
+        sum: [
+          {
+            status: 'published',
+            sum: '20',
+          },
+          {
+            status: 'draft',
+            sum: '63',
+          },
+        ],
+      }
+      fetch.mockResponse(JSON.stringify(mockResponse))
+
+      const response = await new PublitApiRequest<Thing>('things')
+        .groupBy('status')
+        .sum('status')
+
+      expect(response).toMatchObject({
+        sum: [
+          {
+            status: 'published',
+            sum: '20',
+          },
+          {
+            status: 'draft',
+            sum: '63',
+          },
+        ],
+      })
+      expect(fetch).toHaveBeenLastCalledWith(
+        'https://api.publit.com/publishing/v2.0/sum/things;status?group_by=status',
+        expect.objectContaining({
+          method: 'GET',
+        })
+      )
+    })
+  })
+
   describe('show()', () => {
     it('should make a show request', async () => {
       fetch.mockResponse(JSON.stringify({ id: '123321' } as Thing))

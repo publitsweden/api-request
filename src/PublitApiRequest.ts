@@ -34,6 +34,14 @@ export type GroupedCount<T> = {
 
 export type Count<T> = number | GroupedCount<T>[]
 
+// If groupBy is used, `sum` will be an array of objects with a subset
+// of properties from <T>, and a `count` property
+export type GroupedSum<T> = {
+  sum: string
+} & Partial<T>
+
+export type Sum<T> = number | GroupedSum<T>[]
+
 export type ApiListResponse<T = unknown> = {
   /** Array of matching objects */
   data: T[]
@@ -44,6 +52,10 @@ export type ApiListResponse<T = unknown> = {
 
 export type ApiCountResponse<T = unknown> = {
   count: Count<T>
+}
+
+export type ApiSumResponse<T = unknown> = {
+  sum: Sum<T>
 }
 
 /**
@@ -419,6 +431,18 @@ export default class PublitApiRequest<T> {
   }
 
   /**
+   *
+   */
+  async sum(parameter: string): Promise<ApiSumResponse<T>> {
+    const { api } = this.options
+    const prefix = api === '' ? '' : `${api}/`
+
+    this._url.pathname = `${prefix}sum/${this.resource};${String(parameter)}`
+
+    return this.fetch<ApiSumResponse<T>>()
+  }
+
+  /**
    * Retrieves a single resource from the specified endpoint
    */
   async show(id?: string): Promise<T> {
@@ -568,6 +592,18 @@ export function isGroupedCount<T>(obj: unknown): obj is GroupedCount<T>[] {
       (item) =>
         typeof item === 'object' &&
         typeof (item as GroupedCount<T>).count === 'string'
+    )
+  )
+}
+
+/** Type guard for sum */
+export function isGroupedSum<T>(obj: unknown): obj is GroupedSum<T>[] {
+  return (
+    Array.isArray(obj) &&
+    obj.every(
+      (item) =>
+        typeof item === 'object' &&
+        typeof (item as GroupedSum<T>).sum === 'string'
     )
   )
 }
