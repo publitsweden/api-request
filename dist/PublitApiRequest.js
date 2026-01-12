@@ -1,3 +1,17 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isGroupedCount = isGroupedCount;
+exports.isGroupedSum = isGroupedSum;
+exports.isApiRequestError = isApiRequestError;
 /**
  * Class for making requests to Publit Core and similar API:s
  *
@@ -9,13 +23,7 @@
  * ```
  *
  */
-export default class PublitApiRequest {
-    /** Options used for all requests, unless overridden individually */
-    static defaultOptions = {
-        api: '',
-        headers: () => ({}),
-        debug: false,
-    };
+class PublitApiRequest {
     /**
      * Create a new ApiRequest from a given URL
      *
@@ -28,32 +36,18 @@ export default class PublitApiRequest {
         request.url = url;
         return request;
     }
-    /**
-     * URL object for the request
-     */
-    _url;
-    resource;
     get url() {
         return this._url;
     }
     set url(url) {
         this._url = new URL(url.toString());
     }
-    /** Options passed via the constructor */
-    options;
-    /** Options passed to the actual fetch request */
-    requestInit;
-    /** Fetch response object, available after the request is done */
-    response;
     constructor(
     /** Resource endpoint for this request */
     resource, 
     /** Options for this request instance */
     options = {}) {
-        this.options = {
-            ...PublitApiRequest.defaultOptions,
-            ...options,
-        };
+        this.options = Object.assign(Object.assign({}, PublitApiRequest.defaultOptions), options);
         this.resource = resource;
         const { origin, api, headers } = this.options;
         if (origin == null) {
@@ -253,158 +247,183 @@ export default class PublitApiRequest {
     /**
      * Lists all available resources on the specified endpoint
      */
-    async index() {
-        return this.fetch();
+    index() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.fetch();
+        });
     }
     /**
      *
      */
-    async count() {
-        const { api } = this.options;
-        const prefix = api === '' ? '' : `${api}/`;
-        this._url.pathname = `${prefix}count/${this.resource}`;
-        return this.fetch();
+    count() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { api } = this.options;
+            const prefix = api === '' ? '' : `${api}/`;
+            this._url.pathname = `${prefix}count/${this.resource}`;
+            return this.fetch();
+        });
     }
     /**
      *
      */
-    async sum(parameter) {
-        const { api } = this.options;
-        const prefix = api === '' ? '' : `${api}/`;
-        this._url.pathname = `${prefix}sum/${this.resource};${String(parameter)}`;
-        return this.fetch();
+    sum(parameter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { api } = this.options;
+            const prefix = api === '' ? '' : `${api}/`;
+            this._url.pathname = `${prefix}sum/${this.resource};${String(parameter)}`;
+            return this.fetch();
+        });
     }
     /**
      * Retrieves a single resource from the specified endpoint
      */
-    async show(id) {
-        if (id != null) {
-            this.url.pathname += `/${id}`;
-        }
-        return this.fetch();
+    show(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (id != null) {
+                this.url.pathname += `/${id}`;
+            }
+            return this.fetch();
+        });
     }
     /**
      * Creates a new resource on the specified endpoint
      */
-    async store(payload) {
-        this.requestInit.method = 'POST';
-        this.setPayload(payload);
-        return this.fetch();
+    store(payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.requestInit.method = 'POST';
+            this.setPayload(payload);
+            return this.fetch();
+        });
     }
     /**
      * Updates a single resource on the specified endpoint
      */
-    async update(id, payload) {
-        this.url.pathname += `/${id}`;
-        this.requestInit.method = 'PUT';
-        this.setPayload(payload);
-        return this.fetch();
+    update(id, payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.url.pathname += `/${id}`;
+            this.requestInit.method = 'PUT';
+            this.setPayload(payload);
+            return this.fetch();
+        });
     }
     /**
      * Deletes a single resource on the specified endpoint
      */
-    async delete(id) {
-        this.url.pathname += `/${id}`;
-        this.requestInit.method = 'DELETE';
-        return this.fetch();
+    delete(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.url.pathname += `/${id}`;
+            this.requestInit.method = 'DELETE';
+            return this.fetch();
+        });
     }
     /**
      * Performs the actual fetch request
      */
-    async fetch() {
-        try {
-            // When the payload is a FormData object, the Content-Type header
-            // should be set to `multipart/form-data`, and the browser will
-            // automatically set that. Otherwise, we need to set it manually.
-            if (!(this.requestInit.body instanceof FormData)) {
-                this.requestInit.headers['Content-Type'] = 'application/json';
-            }
-            if (this.options.debug) {
-                const message = [];
-                message.push('SENDING API-REQUEST:');
-                message.push(`URL: ${this.url.toString()}`);
-                message.push(`Method: ${this.requestInit.method}`);
-                message.push(`Headers: ${JSON.stringify(this.requestInit.headers)}`);
-                if (this.requestInit.body instanceof FormData) {
-                    // FormData objects are not easily logged
-                    const formData = this.requestInit.body;
-                    const data = Object.fromEntries(Array.from(formData.keys()).map((key) => [
-                        key,
-                        formData.getAll(key).length > 1
-                            ? formData.getAll(key)
-                            : formData.get(key),
-                    ]));
-                    message.push(`Body: ${JSON.stringify(data)}`);
+    fetch() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                // When the payload is a FormData object, the Content-Type header
+                // should be set to `multipart/form-data`, and the browser will
+                // automatically set that. Otherwise, we need to set it manually.
+                if (!(this.requestInit.body instanceof FormData)) {
+                    this.requestInit.headers['Content-Type'] = 'application/json';
                 }
-                else if (this.requestInit.body != null) {
-                    message.push(`Body: ${this.requestInit.body.toString()}`);
+                if (this.options.debug) {
+                    const message = [];
+                    message.push('SENDING API-REQUEST:');
+                    message.push(`URL: ${this.url.toString()}`);
+                    message.push(`Method: ${this.requestInit.method}`);
+                    message.push(`Headers: ${JSON.stringify(this.requestInit.headers)}`);
+                    if (this.requestInit.body instanceof FormData) {
+                        // FormData objects are not easily logged
+                        const formData = this.requestInit.body;
+                        const data = Object.fromEntries(Array.from(formData.keys()).map((key) => [
+                            key,
+                            formData.getAll(key).length > 1
+                                ? formData.getAll(key)
+                                : formData.get(key),
+                        ]));
+                        message.push(`Body: ${JSON.stringify(data)}`);
+                    }
+                    else if (this.requestInit.body != null) {
+                        message.push(`Body: ${this.requestInit.body.toString()}`);
+                    }
+                    console.log(message.join('\n'));
                 }
-                console.log(message.join('\n'));
+                const response = yield fetch(this.url.toString(), this.requestInit);
+                if (this.options.debug) {
+                    const message = [];
+                    message.push('RECEIVED API-RESPONSE:');
+                    message.push(`Request URL: ${this.url.toString()}`);
+                    message.push(`Status: ${response.status}`);
+                    message.push(`StatusText: ${response.statusText}`);
+                    message.push(`Headers: ${JSON.stringify(response.headers)}`);
+                    console.log(message.join('\n'));
+                }
+                this.response = response;
+                return this.handleResponse(response);
             }
-            const response = await fetch(this.url.toString(), this.requestInit);
-            if (this.options.debug) {
-                const message = [];
-                message.push('RECEIVED API-RESPONSE:');
-                message.push(`Request URL: ${this.url.toString()}`);
-                message.push(`Status: ${response.status}`);
-                message.push(`StatusText: ${response.statusText}`);
-                message.push(`Headers: ${JSON.stringify(response.headers)}`);
-                console.log(message.join('\n'));
+            catch (err) {
+                console.log(err);
+                const error = {
+                    message: 'Request failed',
+                };
+                if (this.options.onError != null) {
+                    yield this.options.onError(error);
+                }
+                throw error;
             }
-            this.response = response;
-            return this.handleResponse(response);
-        }
-        catch (err) {
-            console.log(err);
-            const error = {
-                message: 'Request failed',
-            };
-            if (this.options.onError != null) {
-                await this.options.onError(error);
-            }
-            throw error;
-        }
+        });
     }
     /**
      * Handles the response from the API
      */
-    async handleResponse(response) {
-        if (response.ok) {
-            return response.json();
-        }
-        const error = {
-            status: response.status,
-            message: response.statusText,
-        };
-        if (response.status === 401) {
-            // 401 errors doesn't return a json
-            error.message = 'Unauthorized';
-        }
-        else {
-            try {
-                const json = await response.json();
-                if (isApiErrorObject(json) ||
-                    isAnApiErrorObjectButWithErrorsPropertyMisspelled(json)) {
-                    error.message = json.CombinedInfo;
-                    error.type = json.Type;
-                }
+    handleResponse(response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (response.ok) {
+                return response.json();
             }
-            catch { }
-        }
-        if (this.options.onError != null) {
-            await this.options.onError(error);
-        }
-        throw error;
+            const error = {
+                status: response.status,
+                message: response.statusText,
+            };
+            if (response.status === 401) {
+                // 401 errors doesn't return a json
+                error.message = 'Unauthorized';
+            }
+            else {
+                try {
+                    const json = yield response.json();
+                    if (isApiErrorObject(json) ||
+                        isAnApiErrorObjectButWithErrorsPropertyMisspelled(json)) {
+                        error.message = json.CombinedInfo;
+                        error.type = json.Type;
+                    }
+                }
+                catch (_a) { }
+            }
+            if (this.options.onError != null) {
+                yield this.options.onError(error);
+            }
+            throw error;
+        });
     }
 }
+/** Options used for all requests, unless overridden individually */
+PublitApiRequest.defaultOptions = {
+    api: '',
+    headers: () => ({}),
+    debug: false,
+};
+exports.default = PublitApiRequest;
 /** Type guard for count */
-export function isGroupedCount(obj) {
+function isGroupedCount(obj) {
     return (Array.isArray(obj) &&
         obj.every((item) => typeof item === 'object' &&
             typeof item.count === 'string'));
 }
 /** Type guard for sum */
-export function isGroupedSum(obj) {
+function isGroupedSum(obj) {
     return (Array.isArray(obj) &&
         obj.every((item) => typeof item === 'object' &&
             typeof item.sum === 'string'));
@@ -419,7 +438,7 @@ function isApiErrorObject(obj) {
         typeof obj.CombinedInfo === 'string');
 }
 /** Type guard for internal API request errors */
-export function isApiRequestError(obj) {
+function isApiRequestError(obj) {
     return (obj != null &&
         typeof obj === 'object' &&
         typeof obj.message === 'string' &&

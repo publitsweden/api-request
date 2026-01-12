@@ -1,29 +1,76 @@
-import PublitApiRequest, { isApiRequestError, } from './PublitApiRequest';
-import fetch from 'jest-fetch-mock';
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const PublitApiRequest_1 = __importStar(require("./PublitApiRequest"));
+const jest_fetch_mock_1 = __importDefault(require("jest-fetch-mock"));
 describe('Request', () => {
     beforeEach(() => {
-        PublitApiRequest.defaultOptions = {
+        PublitApiRequest_1.default.defaultOptions = {
             origin: 'https://api.publit.com',
             api: 'publishing/v2.0',
             headers: () => ({}),
         };
-        fetch.resetMocks();
+        jest_fetch_mock_1.default.resetMocks();
     });
     describe('defaultOptions', () => {
         it('should allow setting `origin` option', () => {
-            PublitApiRequest.defaultOptions.origin = 'https://test.publit.com';
-            expect(new PublitApiRequest('endpoint').url.origin).toBe('https://test.publit.com');
+            PublitApiRequest_1.default.defaultOptions.origin = 'https://test.publit.com';
+            expect(new PublitApiRequest_1.default('endpoint').url.origin).toBe('https://test.publit.com');
         });
         it('should allow setting `api` option', () => {
-            PublitApiRequest.defaultOptions.api = 'test/v3.5';
-            expect(new PublitApiRequest('endpoint').url.pathname).toBe('/test/v3.5/endpoint');
+            PublitApiRequest_1.default.defaultOptions.api = 'test/v3.5';
+            expect(new PublitApiRequest_1.default('endpoint').url.pathname).toBe('/test/v3.5/endpoint');
         });
         it('should allow setting `headers` option', () => {
-            PublitApiRequest.defaultOptions.headers = () => ({
+            PublitApiRequest_1.default.defaultOptions.headers = () => ({
                 'X-Test': 'test',
                 'X-Test2': 'test2',
             });
-            expect(new PublitApiRequest('endpoint').requestInit.headers).toEqual({
+            expect(new PublitApiRequest_1.default('endpoint').requestInit.headers).toEqual({
                 'X-Test': 'test',
                 'X-Test2': 'test2',
             });
@@ -31,31 +78,31 @@ describe('Request', () => {
     });
     describe('constructor', () => {
         it('should set `url` property', () => {
-            expect(new PublitApiRequest('endpoint').url.toString()).toEqual('https://api.publit.com/publishing/v2.0/endpoint');
+            expect(new PublitApiRequest_1.default('endpoint').url.toString()).toEqual('https://api.publit.com/publishing/v2.0/endpoint');
         });
         it('should set `requestInit` property', () => {
-            expect(new PublitApiRequest('endpoint').requestInit).toEqual({
+            expect(new PublitApiRequest_1.default('endpoint').requestInit).toEqual({
                 method: 'GET',
                 headers: {},
             });
         });
         it('should allow overriding `origin` option', () => {
-            expect(new PublitApiRequest('endpoint').url.origin).toBe('https://api.publit.com');
-            expect(new PublitApiRequest('endpoint', {
+            expect(new PublitApiRequest_1.default('endpoint').url.origin).toBe('https://api.publit.com');
+            expect(new PublitApiRequest_1.default('endpoint', {
                 origin: 'http://api.example.com:1992',
             }).url.origin).toBe('http://api.example.com:1992');
         });
         it('should allow overriding `api` option', () => {
-            expect(new PublitApiRequest('endpoint').url.pathname).toBe('/publishing/v2.0/endpoint');
-            expect(new PublitApiRequest('endpoint', {
+            expect(new PublitApiRequest_1.default('endpoint').url.pathname).toBe('/publishing/v2.0/endpoint');
+            expect(new PublitApiRequest_1.default('endpoint', {
                 api: '',
             }).url.pathname).toBe('/endpoint');
-            expect(new PublitApiRequest('endpoint', {
+            expect(new PublitApiRequest_1.default('endpoint', {
                 api: '2.0/foo/bar',
             }).url.pathname).toBe('/2.0/foo/bar/endpoint');
         });
         it('should allow overriding `headers` option', () => {
-            expect(new PublitApiRequest('endpoint', {
+            expect(new PublitApiRequest_1.default('endpoint', {
                 headers: () => ({
                     'X-Foo': 'bar',
                 }),
@@ -66,59 +113,59 @@ describe('Request', () => {
     });
     describe('fromUrl()', () => {
         it('should create a request object from a URL', () => {
-            const request = PublitApiRequest.fromUrl('https://api.publit.com/endpoint');
-            expect(request).toBeInstanceOf(PublitApiRequest);
+            const request = PublitApiRequest_1.default.fromUrl('https://api.publit.com/endpoint');
+            expect(request).toBeInstanceOf(PublitApiRequest_1.default);
             expect(request.url.toString()).toBe('https://api.publit.com/endpoint');
         });
     });
     describe('limit()', () => {
         it('should set limit', () => {
-            const r = new PublitApiRequest('endpoint').limit(10);
+            const r = new PublitApiRequest_1.default('endpoint').limit(10);
             expect(r.url.search).toBe('?limit=10');
         });
         it('should set limit and offset', () => {
-            const r = new PublitApiRequest('endpoint').limit(10, 20);
+            const r = new PublitApiRequest_1.default('endpoint').limit(10, 20);
             expect(r.url.search).toBe('?limit=20%2C10');
         });
         it('should overwrite existing limit', () => {
-            const r = PublitApiRequest.fromUrl('https://example.com?limit=50');
+            const r = PublitApiRequest_1.default.fromUrl('https://example.com?limit=50');
             r.limit(10);
             expect(r.url.search).toBe('?limit=10');
         });
     });
     describe('with()', () => {
         it('should set single relation', () => {
-            const r = new PublitApiRequest('endpoint').with('foo');
+            const r = new PublitApiRequest_1.default('endpoint').with('foo');
             expect(r.url.search).toBe('?with=foo');
         });
         it('should set multiple relations', () => {
-            const r = new PublitApiRequest('endpoint')
+            const r = new PublitApiRequest_1.default('endpoint')
                 .with('foo')
                 .with('bar')
                 .with('baz');
             expect(r.url.search).toBe('?with=foo%2Cbar%2Cbaz');
         });
         it('should add to existing relations', () => {
-            const r = PublitApiRequest.fromUrl('https://example.com?with=foobar,bazoo');
+            const r = PublitApiRequest_1.default.fromUrl('https://example.com?with=foobar,bazoo');
             r.with('foo').with('bar').with('baz');
             expect(r.url.search).toBe('?with=foobar%2Cbazoo%2Cfoo%2Cbar%2Cbaz');
         });
     });
     describe('scope()', () => {
         it('should set single scope', () => {
-            const r = new PublitApiRequest('endpoint').scope('published');
+            const r = new PublitApiRequest_1.default('endpoint').scope('published');
             expect(r.url.search).toBe('?scope=published');
         });
         it('should set single scope with qualifier', () => {
-            const r = new PublitApiRequest('endpoint').scope('status', 'published');
+            const r = new PublitApiRequest_1.default('endpoint').scope('status', 'published');
             expect(r.url.search).toBe('?scope=status%3Bpublished');
         });
         it('should set multiple scopes', () => {
-            const r = new PublitApiRequest('endpoint').scope('published').scope('pod');
+            const r = new PublitApiRequest_1.default('endpoint').scope('published').scope('pod');
             expect(r.url.search).toBe('?scope=published%2Cpod');
         });
         it('should set multiple scopes with qualifiers', () => {
-            const r = new PublitApiRequest('endpoint')
+            const r = new PublitApiRequest_1.default('endpoint')
                 .scope('status', 'published')
                 .scope('type', 'pod');
             expect(r.url.search).toBe('?scope=status%3Bpublished%2Ctype%3Bpod');
@@ -126,22 +173,22 @@ describe('Request', () => {
     });
     describe('has()', () => {
         it('should add an EQUAL relation filter', () => {
-            const r = new PublitApiRequest('endpoint').has('work', 'title', 'EQUAL', 'Röda Rummet', 'AND');
+            const r = new PublitApiRequest_1.default('endpoint').has('work', 'title', 'EQUAL', 'Röda Rummet', 'AND');
             expect(r.url.search).toBe('?has=work%28title%3BEQUAL%3BR%C3%B6da+Rummet%29%3BAND');
         });
         it('should add a LIKE relation filter', () => {
-            const r = new PublitApiRequest('endpoint').has('work', 'title', 'LIKE', 'Röda Rummet', 'AND');
+            const r = new PublitApiRequest_1.default('endpoint').has('work', 'title', 'LIKE', 'Röda Rummet', 'AND');
             expect(r.url.search).toBe('?has=work%28title%3BLIKE%3B%25R%C3%B6da+Rummet%25%29%3BAND');
         });
         it('should add multiple relation filters', () => {
-            const r = new PublitApiRequest('endpoint')
+            const r = new PublitApiRequest_1.default('endpoint')
                 .has('work', 'title', 'EQUAL', 'Röda Rummet', 'OR')
                 .has('work', 'title', 'EQUAL', 'Blå Tåget', 'OR')
                 .has('work', 'status', 'EQUAL', 'draft', 'OR');
             expect(r.url.search).toBe('?has=work%28title%3BEQUAL%3BR%C3%B6da+Rummet%29%3BOR%2Cwork%28title%3BEQUAL%3BBl%C3%A5+T%C3%A5get%29%3BOR%2Cwork%28status%3BEQUAL%3Bdraft%29%3BOR');
         });
         it('should add multiple filters if passed an array of values', () => {
-            const r = new PublitApiRequest('endpoint')
+            const r = new PublitApiRequest_1.default('endpoint')
                 .has('work', 'title', 'EQUAL', [
                 'Röda Rummet',
                 'Blå Tåget',
@@ -151,15 +198,15 @@ describe('Request', () => {
             expect(r.url.search).toBe('?has=work%28title%3BEQUAL%3BR%C3%B6da+Rummet%29%3BOR%2Cwork%28title%3BEQUAL%3BBl%C3%A5+T%C3%A5get%29%3BOR%2Cwork%28title%3BEQUAL%3BGr%C3%B6ne+J%C3%A4garen%29%3BOR%2Cwork%28status%3BEQUAL%3Bdraft%29%3BOR');
         });
         it('should add a relation filter for an array relation', () => {
-            const r = new PublitApiRequest('endpoint').has('works', 'title', 'EQUAL', 'Röda Rummet');
+            const r = new PublitApiRequest_1.default('endpoint').has('works', 'title', 'EQUAL', 'Röda Rummet');
             expect(r.url.search).toBe('?has=works%28title%3BEQUAL%3BR%C3%B6da+Rummet%29%3BOR');
         });
         it('should add relation filter with no value', () => {
-            const r = new PublitApiRequest('endpoint').has('work');
+            const r = new PublitApiRequest_1.default('endpoint').has('work');
             expect(r.url.search).toBe('?has=work');
         });
         it('should add relation filter with no value and another relation with value', () => {
-            const r = new PublitApiRequest('endpoint')
+            const r = new PublitApiRequest_1.default('endpoint')
                 .has('isbn')
                 .has('work', 'title', 'EQUAL', 'Röda Rummet');
             expect(r.url.search).toBe('?has=isbn%2Cwork%28title%3BEQUAL%3BR%C3%B6da+Rummet%29%3BOR');
@@ -167,11 +214,11 @@ describe('Request', () => {
     });
     describe('groupBy()', () => {
         it('should set single groupBy', () => {
-            const r = new PublitApiRequest('endpoint').groupBy('status');
+            const r = new PublitApiRequest_1.default('endpoint').groupBy('status');
             expect(r.url.search).toBe('?group_by=status');
         });
         it('should set multiple groupBy', () => {
-            const r = new PublitApiRequest('endpoint')
+            const r = new PublitApiRequest_1.default('endpoint')
                 .groupBy('status')
                 .groupBy('isbn');
             expect(r.url.search).toBe('?group_by=status%2Cisbn');
@@ -179,25 +226,25 @@ describe('Request', () => {
     });
     describe('where()', () => {
         it('should add an EQUAL attribute filter', () => {
-            const r = new PublitApiRequest('endpoint').where('title', 'EQUAL', 'Röda Rummet', 'AND');
+            const r = new PublitApiRequest_1.default('endpoint').where('title', 'EQUAL', 'Röda Rummet', 'AND');
             expect(r.url.search).toBe('?title=R%C3%B6da+Rummet&title_args=EQUAL%3BAND');
         });
         it('should add a LIKE attribute filter', () => {
-            const r = new PublitApiRequest('endpoint').where('title', 'LIKE', 'Röda Rummet', 'AND');
+            const r = new PublitApiRequest_1.default('endpoint').where('title', 'LIKE', 'Röda Rummet', 'AND');
             expect(r.url.search).toBe('?title=%25R%C3%B6da+Rummet%25&title_args=LIKE%3BAND');
         });
         it('should add multiple attribute filters', () => {
-            const r = new PublitApiRequest('endpoint')
+            const r = new PublitApiRequest_1.default('endpoint')
                 .where('title', 'EQUAL', 'Röda Rummet', 'AND')
                 .where('author', 'EQUAL', 'August', 'AND');
             expect(r.url.search).toBe('?title=R%C3%B6da+Rummet&title_args=EQUAL%3BAND&author=August&author_args=EQUAL%3BAND');
         });
         it('should add a LIKE filter with multiple values', () => {
-            const r = new PublitApiRequest('endpoint').where('title', 'LIKE', ['Röda Rummet', 'Blå Tåget']);
+            const r = new PublitApiRequest_1.default('endpoint').where('title', 'LIKE', ['Röda Rummet', 'Blå Tåget']);
             expect(r.url.search).toBe('?title=%25R%C3%B6da+Rummet%25%2C%25Bl%C3%A5+T%C3%A5get%25&title_args=LIKE%3BOR');
         });
         it('should add multiple values for same attribute', () => {
-            const r = new PublitApiRequest('endpoint')
+            const r = new PublitApiRequest_1.default('endpoint')
                 .where('created_at', 'GREATER_EQUAL', '2020-01-01', 'AND')
                 .where('created_at', 'LESS_EQUAL', '2020-01-31', 'AND');
             expect(r.url.search).toBe('?created_at=2020-01-01%2C2020-01-31&created_at_args=GREATER_EQUAL%3BAND%2CLESS_EQUAL%3BAND');
@@ -205,11 +252,11 @@ describe('Request', () => {
     });
     describe('auxiliary()', () => {
         it('should set an auxiliary attribute', () => {
-            const r = new PublitApiRequest('endpoint').auxiliary('extra');
+            const r = new PublitApiRequest_1.default('endpoint').auxiliary('extra');
             expect(r.url.search).toBe('?auxiliary=extra');
         });
         it('should set multiple auxiliary attributes', () => {
-            const r = new PublitApiRequest('endpoint')
+            const r = new PublitApiRequest_1.default('endpoint')
                 .auxiliary('extra')
                 .auxiliary('more');
             expect(r.url.search).toBe('?auxiliary=extra%2Cmore');
@@ -217,33 +264,33 @@ describe('Request', () => {
     });
     describe('orderBy()', () => {
         it('should set single sort order', () => {
-            const r = new PublitApiRequest('endpoint').orderBy('title');
+            const r = new PublitApiRequest_1.default('endpoint').orderBy('title');
             expect(r.url.search).toBe('?order_by=title');
         });
         it('should set single sort order and direction', () => {
-            const r = new PublitApiRequest('endpoint').orderBy('title', 'DESC');
+            const r = new PublitApiRequest_1.default('endpoint').orderBy('title', 'DESC');
             expect(r.url.search).toBe('?order_by=title&order_dir=DESC');
         });
         it('should set multiple sort orders', () => {
-            const r = new PublitApiRequest('endpoint')
+            const r = new PublitApiRequest_1.default('endpoint')
                 .orderBy('title')
                 .orderBy('author');
             expect(r.url.search).toBe('?order_by=title%2Cauthor');
         });
         it('should set multiple sort orders with directions', () => {
-            const r = new PublitApiRequest('endpoint')
+            const r = new PublitApiRequest_1.default('endpoint')
                 .orderBy('title', 'DESC')
                 .orderBy('author', 'ASC');
             expect(r.url.search).toBe('?order_by=title%2Cauthor&order_dir=DESC%2CASC');
         });
     });
     describe('index()', () => {
-        it('should make a request', async () => {
-            fetch.mockResponse(JSON.stringify({
+        it('should make a request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({
                 count: 0,
                 data: [{ id: '123321' }],
             }));
-            const request = await new PublitApiRequest('things')
+            const request = yield new PublitApiRequest_1.default('things')
                 .has('isbn', 'isbn', 'EQUAL', '9789186053512')
                 .where('status', 'EQUAL', 'published')
                 .with('work')
@@ -253,24 +300,24 @@ describe('Request', () => {
                 .with('thumbnail_files')
                 .index();
             expect(request).toMatchObject({ count: 0, data: [{ id: '123321' }] });
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things?has=isbn%28isbn%3BEQUAL%3B9789186053512%29%3BOR&status=published&status_args=EQUAL%3BOR&with=work%2Cwork.contributor_works%2Cwork.contributor_works.contributor%2Cisbn%2Cthumbnail_files', expect.objectContaining({
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things?has=isbn%28isbn%3BEQUAL%3B9789186053512%29%3BOR&status=published&status_args=EQUAL%3BOR&with=work%2Cwork.contributor_works%2Cwork.contributor_works.contributor%2Cisbn%2Cthumbnail_files', expect.objectContaining({
                 method: 'GET',
             }));
-        });
+        }));
     });
     describe('count()', () => {
-        it('should make a request', async () => {
-            fetch.mockResponse(JSON.stringify({
+        it('should make a request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({
                 count: 5,
             }));
-            const request = await new PublitApiRequest('things').count();
+            const request = yield new PublitApiRequest_1.default('things').count();
             expect(request).toMatchObject({ count: 5 });
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/count/things', expect.objectContaining({
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/count/things', expect.objectContaining({
                 method: 'GET',
             }));
-        });
-        it('should make a request with groupBy', async () => {
-            fetch.mockResponse(JSON.stringify({
+        }));
+        it('should make a request with groupBy', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({
                 count: [
                     {
                         status: 'published',
@@ -282,7 +329,7 @@ describe('Request', () => {
                     },
                 ],
             }));
-            const response = await new PublitApiRequest('things')
+            const response = yield new PublitApiRequest_1.default('things')
                 .groupBy('status')
                 .count();
             expect(response).toMatchObject({
@@ -297,55 +344,88 @@ describe('Request', () => {
                     },
                 ],
             });
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/count/things?group_by=status', expect.objectContaining({
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/count/things?group_by=status', expect.objectContaining({
                 method: 'GET',
             }));
-        });
+        }));
     });
     describe('sum()', () => {
-        it('should make a request', async () => {
-            fetch.mockResponse(JSON.stringify({
+        it('should make a request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({
                 sum: 5,
             }));
-            const request = await new PublitApiRequest('things').sum('revenue');
+            const request = yield new PublitApiRequest_1.default('things').sum('revenue');
             expect(request).toMatchObject({ sum: 5 });
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/sum/things;revenue', expect.objectContaining({
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/sum/things;revenue', expect.objectContaining({
                 method: 'GET',
             }));
-        });
+        }));
+        it('should make a request with groupBy', () => __awaiter(void 0, void 0, void 0, function* () {
+            const mockResponse = {
+                sum: [
+                    {
+                        status: 'published',
+                        sum: '20',
+                    },
+                    {
+                        status: 'draft',
+                        sum: '63',
+                    },
+                ],
+            };
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify(mockResponse));
+            const response = yield new PublitApiRequest_1.default('things')
+                .groupBy('status')
+                .sum('status');
+            expect(response).toMatchObject({
+                sum: [
+                    {
+                        status: 'published',
+                        sum: '20',
+                    },
+                    {
+                        status: 'draft',
+                        sum: '63',
+                    },
+                ],
+            });
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/sum/things;status?group_by=status', expect.objectContaining({
+                method: 'GET',
+            }));
+        }));
     });
     describe('show()', () => {
-        it('should make a show request', async () => {
-            fetch.mockResponse(JSON.stringify({ id: '123321' }));
-            const request = await new PublitApiRequest('things').show('123321');
+        it('should make a show request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
+            const request = yield new PublitApiRequest_1.default('things').show('123321');
             expect(request).toMatchObject({ id: '123321' });
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321', expect.objectContaining({
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321', expect.objectContaining({
                 method: 'GET',
             }));
-        });
+        }));
     });
     describe('store()', () => {
-        it('should make a store request with object payload', async () => {
-            fetch.mockResponse(JSON.stringify({ id: '123321' }));
-            const request = await new PublitApiRequest('things').store({
+        it('should make a store request with object payload', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
+            const request = yield new PublitApiRequest_1.default('things').store({
                 hello: 'goodbye',
             });
             expect(request).toMatchObject({ id: '123321' });
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
                 body: JSON.stringify({ hello: 'goodbye' }),
                 method: 'POST',
             }));
-        });
-        it('should make a store request with array payload', async () => {
-            fetch.mockResponse(JSON.stringify({ id: '123321' }));
-            const request = await new PublitApiRequest('things').store([
+        }));
+        it('should make a store request with array payload', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
+            const request = yield new PublitApiRequest_1.default('things').store([
                 {
                     hello: 'goodbye',
                 },
                 { goodbye: 'hello' },
             ]);
             expect(request).toMatchObject({ id: '123321' });
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
                 body: JSON.stringify([
                     {
                         hello: 'goodbye',
@@ -354,142 +434,142 @@ describe('Request', () => {
                 ]),
                 method: 'POST',
             }));
-        });
-        it('should make a store request with form data payload', async () => {
-            fetch.mockResponse(JSON.stringify({ id: '123321' }));
+        }));
+        it('should make a store request with form data payload', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
             const data = new FormData();
             data.append('hello', 'goodbye');
-            const response = await new PublitApiRequest('things').store(data);
+            const response = yield new PublitApiRequest_1.default('things').store(data);
             expect(response).toMatchObject({ id: '123321' });
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
                 body: data,
                 method: 'POST',
             }));
-        });
+        }));
     });
     describe('update()', () => {
-        it('should make an update request', async () => {
-            fetch.mockResponse(JSON.stringify({ id: '123321' }));
-            const request = await new PublitApiRequest('things').update('123321', {
+        it('should make an update request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
+            const request = yield new PublitApiRequest_1.default('things').update('123321', {
                 hello: 'goodbye',
             });
             expect(request).toMatchObject({ id: '123321' });
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321', expect.objectContaining({
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321', expect.objectContaining({
                 body: JSON.stringify({ hello: 'goodbye' }),
                 method: 'PUT',
             }));
-        });
-        it('should make an update request with form data payload', async () => {
-            fetch.mockResponse(JSON.stringify({ id: '123321' }));
+        }));
+        it('should make an update request with form data payload', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
             const data = new FormData();
             data.append('hello', 'goodbye');
-            const response = await new PublitApiRequest('things').update('123321', data);
+            const response = yield new PublitApiRequest_1.default('things').update('123321', data);
             expect(response).toMatchObject({ id: '123321' });
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321', expect.objectContaining({
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321', expect.objectContaining({
                 body: data,
                 method: 'PUT',
             }));
-        });
+        }));
     });
     describe('delete()', () => {
-        it('should make a delete request', async () => {
-            fetch.mockResponse(JSON.stringify({ id: '123321' }));
-            const request = await new PublitApiRequest('things').delete('123321');
+        it('should make a delete request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
+            const request = yield new PublitApiRequest_1.default('things').delete('123321');
             expect(request).toMatchObject({ id: '123321' });
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321', expect.objectContaining({
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321', expect.objectContaining({
                 method: 'DELETE',
             }));
-        });
+        }));
     });
     describe('only()', () => {
-        it('should add only query parameter', async () => {
-            fetch.mockResponse(JSON.stringify({ id: '123321' }));
-            const request = await new PublitApiRequest('things')
+        it('should add only query parameter', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
+            const request = yield new PublitApiRequest_1.default('things')
                 .only('id')
                 .show('123321');
             expect(request).toMatchObject({ id: '123321' });
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321?only=id', expect.objectContaining({
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321?only=id', expect.objectContaining({
                 method: 'GET',
             }));
-        });
-        it('should add multiple only query parameters in separate calls', async () => {
-            fetch.mockResponse(JSON.stringify({ id: '123321' }));
-            const request = await new PublitApiRequest('things')
+        }));
+        it('should add multiple only query parameters in separate calls', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
+            const request = yield new PublitApiRequest_1.default('things')
                 .only('id')
                 .only('status')
                 .show('123321');
             expect(request).toMatchObject({ id: '123321' });
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321?only=id%2Cstatus', expect.objectContaining({
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321?only=id%2Cstatus', expect.objectContaining({
                 method: 'GET',
             }));
-        });
-        it('should add multiple only query parameters in one call', async () => {
-            fetch.mockResponse(JSON.stringify({ id: '123321' }));
-            const request = await new PublitApiRequest('things')
+        }));
+        it('should add multiple only query parameters in one call', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({ id: '123321' }));
+            const request = yield new PublitApiRequest_1.default('things')
                 .only('id', 'status')
                 .show('123321');
             expect(request).toMatchObject({ id: '123321' });
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321?only=id%2Cstatus', expect.objectContaining({
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things/123321?only=id%2Cstatus', expect.objectContaining({
                 method: 'GET',
             }));
-        });
+        }));
     });
-    it('should allow changing RequestInit before fetching', async () => {
-        fetch.mockResponse('{}');
-        const request = new PublitApiRequest('things');
+    it('should allow changing RequestInit before fetching', () => __awaiter(void 0, void 0, void 0, function* () {
+        jest_fetch_mock_1.default.mockResponse('{}');
+        const request = new PublitApiRequest_1.default('things');
         request.requestInit.headers = {
             'X-Custom-Header': 'custom-value',
         };
-        await request.index();
-        expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
+        yield request.index();
+        expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
             method: 'GET',
             headers: expect.objectContaining({
                 'X-Custom-Header': 'custom-value',
             }),
         }));
-    });
+    }));
     describe('fetch()', () => {
-        it('should set correct content-type with object payload', async () => {
-            fetch.mockResponse('{}');
-            const request = new PublitApiRequest('things');
+        it('should set correct content-type with object payload', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            const request = new PublitApiRequest_1.default('things');
             request.setPayload({ hello: 'world' });
-            await request.store();
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
+            yield request.store();
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
                 headers: expect.objectContaining({
                     'Content-Type': 'application/json',
                 }),
             }));
-        });
-        it('should set correct content-type with FormData payload', async () => {
-            fetch.mockResponse('{}');
-            const request = new PublitApiRequest('things');
+        }));
+        it('should set correct content-type with FormData payload', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            const request = new PublitApiRequest_1.default('things');
             const payload = new FormData();
             payload.append('hello', 'world');
             request.setPayload(payload);
-            await request.store();
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
+            yield request.store();
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
                 headers: {},
             }));
-        });
-        it('should set correct content-type with no payload', async () => {
-            fetch.mockResponse('{}');
-            const request = new PublitApiRequest('things');
-            await request.store();
-            expect(fetch).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
+        }));
+        it('should set correct content-type with no payload', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            const request = new PublitApiRequest_1.default('things');
+            yield request.store();
+            expect(jest_fetch_mock_1.default).toHaveBeenLastCalledWith('https://api.publit.com/publishing/v2.0/things', expect.objectContaining({
                 headers: expect.objectContaining({
                     'Content-Type': 'application/json',
                 }),
             }));
-        });
+        }));
     });
     describe('error handling', () => {
         const handleError = jest.fn();
-        it('should throw error on 401 response', async () => {
-            fetch.mockResponse('Invalid credentials.', { status: 401 });
+        it('should throw error on 401 response', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('Invalid credentials.', { status: 401 });
             // Tell jest we expect one assertion, or else it will fail
             expect.assertions(2);
             try {
-                await new PublitApiRequest('resource', {
+                yield new PublitApiRequest_1.default('resource', {
                     onError: handleError,
                 }).index();
             }
@@ -503,9 +583,9 @@ describe('Request', () => {
                 status: 401,
                 message: 'Unauthorized',
             });
-        });
-        it('should throw error when server returns json', async () => {
-            fetch.mockResponse(JSON.stringify({
+        }));
+        it('should throw error when server returns json', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse(JSON.stringify({
                 Code: 404,
                 Type: 'NotFound',
                 Errors: [
@@ -519,7 +599,7 @@ describe('Request', () => {
             // Tell jest we expect one assertion, or else it will fail
             expect.assertions(2);
             try {
-                await new PublitApiRequest('resource', {
+                yield new PublitApiRequest_1.default('resource', {
                     onError: handleError,
                 }).index();
             }
@@ -535,13 +615,13 @@ describe('Request', () => {
                 type: 'NotFound',
                 message: 'BaseResourceController (950) Object with id: 3730 not found',
             });
-        });
-        it('should throw error when server returns html', async () => {
-            fetch.mockResponse('<!DOCTYPE html>', { status: 404 });
+        }));
+        it('should throw error when server returns html', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('<!DOCTYPE html>', { status: 404 });
             // Tell jest we expect one assertion, or else it will fail
             expect.assertions(2);
             try {
-                await new PublitApiRequest('resource', {
+                yield new PublitApiRequest_1.default('resource', {
                     onError: handleError,
                 }).index();
             }
@@ -555,13 +635,13 @@ describe('Request', () => {
                 status: 404,
                 message: 'Not Found',
             });
-        });
-        it('should throw error when server returns nothing', async () => {
-            fetch.mockResponse('', { status: 500 });
+        }));
+        it('should throw error when server returns nothing', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('', { status: 500 });
             // Tell jest we expect one assertion, or else it will fail
             expect.assertions(2);
             try {
-                await new PublitApiRequest('resource', {
+                yield new PublitApiRequest_1.default('resource', {
                     onError: handleError,
                 }).index();
             }
@@ -575,13 +655,13 @@ describe('Request', () => {
                 status: 500,
                 message: 'Internal Server Error',
             });
-        });
-        it('should throw error when request fails', async () => {
-            fetch.mockReject();
+        }));
+        it('should throw error when request fails', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockReject();
             // Tell jest we expect one assertion, or else it will fail
             expect.assertions(2);
             try {
-                await new PublitApiRequest('resource', {
+                yield new PublitApiRequest_1.default('resource', {
                     onError: handleError,
                 }).index();
             }
@@ -593,7 +673,7 @@ describe('Request', () => {
             expect(handleError).toHaveBeenCalledWith({
                 message: 'Request failed',
             });
-        });
+        }));
     });
     describe('debugging', () => {
         let consoleLogSpy;
@@ -604,75 +684,75 @@ describe('Request', () => {
         afterEach(() => {
             jest.restoreAllMocks();
         });
-        it('should print request data for index request', async () => {
-            fetch.mockResponse('{}');
-            await new PublitApiRequest('things').debug().index();
+        it('should print request data for index request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            yield new PublitApiRequest_1.default('things').debug().index();
             expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot();
             expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot();
-        });
-        it('should print request data for show request', async () => {
-            fetch.mockResponse('{}');
-            await new PublitApiRequest('things').debug().show('123');
+        }));
+        it('should print request data for show request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            yield new PublitApiRequest_1.default('things').debug().show('123');
             expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot();
             expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot();
-        });
-        it('should print request data for store request', async () => {
-            fetch.mockResponse('{}');
-            await new PublitApiRequest('things').debug().store({});
+        }));
+        it('should print request data for store request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            yield new PublitApiRequest_1.default('things').debug().store({});
             expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot();
             expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot();
-        });
-        it('should output form data', async () => {
-            fetch.mockResponse('{}');
+        }));
+        it('should output form data', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
             const formData = new FormData();
             formData.append('hello', 'world');
             formData.append('hello', 'goodbye');
             formData.append('goodbye', 'world');
-            await new PublitApiRequest('things').debug().store(formData);
+            yield new PublitApiRequest_1.default('things').debug().store(formData);
             expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot();
             expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot();
-        });
-        it('should print request data for update request', async () => {
-            fetch.mockResponse('{}');
-            await new PublitApiRequest('things').debug().update('123', {});
+        }));
+        it('should print request data for update request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            yield new PublitApiRequest_1.default('things').debug().update('123', {});
             expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot();
             expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot();
-        });
-        it('should print request data for delete request', async () => {
-            fetch.mockResponse('{}');
-            await new PublitApiRequest('things').debug().delete('123');
+        }));
+        it('should print request data for delete request', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            yield new PublitApiRequest_1.default('things').debug().delete('123');
             expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot();
             expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot();
-        });
-        it('should set global debug option', async () => {
-            PublitApiRequest.defaultOptions.debug = true;
-            fetch.mockResponse('{}');
-            await new PublitApiRequest('things').index();
+        }));
+        it('should set global debug option', () => __awaiter(void 0, void 0, void 0, function* () {
+            PublitApiRequest_1.default.defaultOptions.debug = true;
+            jest_fetch_mock_1.default.mockResponse('{}');
+            yield new PublitApiRequest_1.default('things').index();
             expect(consoleLogSpy.mock.calls[0][0]).toMatchSnapshot();
             expect(consoleLogSpy.mock.calls[1][0]).toMatchSnapshot();
-        });
-        it('should not output debug data when debugging is off', async () => {
-            fetch.mockResponse('{}');
-            await new PublitApiRequest('things').index();
+        }));
+        it('should not output debug data when debugging is off', () => __awaiter(void 0, void 0, void 0, function* () {
+            jest_fetch_mock_1.default.mockResponse('{}');
+            yield new PublitApiRequest_1.default('things').index();
             expect(consoleLogSpy).not.toHaveBeenCalled();
-        });
+        }));
     });
 });
 describe('isApiRequestError()', () => {
     it('should determine if object is an api request error', () => {
-        expect(isApiRequestError({
+        expect((0, PublitApiRequest_1.isApiRequestError)({
             status: 500,
             type: 'type',
             message: 'message',
         })).toBe(true);
-        expect(isApiRequestError({
+        expect((0, PublitApiRequest_1.isApiRequestError)({
             status: 500,
             message: 'message',
         })).toBe(true);
-        expect(isApiRequestError({
+        expect((0, PublitApiRequest_1.isApiRequestError)({
             message: 'message',
         })).toBe(false);
-        expect(isApiRequestError({
+        expect((0, PublitApiRequest_1.isApiRequestError)({
             status: 'status',
         })).toBe(false);
     });
