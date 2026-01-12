@@ -20,6 +20,10 @@ export type GroupedCount<T> = {
     count: string;
 } & Partial<T>;
 export type Count<T> = number | GroupedCount<T>[];
+export type GroupedSum<T> = {
+    sum: string;
+} & Partial<T>;
+export type Sum<T> = number | GroupedSum<T>[];
 export type ApiListResponse<T = unknown> = {
     /** Array of matching objects */
     data: T[];
@@ -29,6 +33,9 @@ export type ApiListResponse<T = unknown> = {
 };
 export type ApiCountResponse<T = unknown> = {
     count: Count<T>;
+};
+export type ApiSumResponse<T = unknown> = {
+    sum: Sum<T>;
 };
 /**
  * Internal error object returned by ApiRequest
@@ -212,6 +219,10 @@ export default class PublitApiRequest<T> {
      */
     count(): Promise<ApiCountResponse<T>>;
     /**
+     *
+     */
+    sum(parameter: string): Promise<ApiSumResponse<T>>;
+    /**
      * Retrieves a single resource from the specified endpoint
      */
     show(id?: string): Promise<T>;
@@ -238,6 +249,8 @@ export default class PublitApiRequest<T> {
 }
 /** Type guard for count */
 export declare function isGroupedCount<T>(obj: unknown): obj is GroupedCount<T>[];
+/** Type guard for sum */
+export declare function isGroupedSum<T>(obj: unknown): obj is GroupedSum<T>[];
 /** Type guard for internal API request errors */
 export declare function isApiRequestError(obj: unknown): obj is ApiRequestError;
 export {};
