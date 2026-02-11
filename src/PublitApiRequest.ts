@@ -453,6 +453,30 @@ export default class PublitApiRequest<T> {
   }
 
   /**
+   * Do a simple fetch request without transforming the return value to json
+   */
+  async download(): Promise<Response> {
+    //return this.fetch()
+    try {
+      const response = await fetch(this.url.toString(), this.requestInit)
+      this.response = response
+
+      return response
+    } catch (err) {
+      console.log(err)
+      const error: ApiRequestError = {
+        message: 'Request failed',
+      }
+
+      if (this.options.onError != null) {
+        await this.options.onError(error)
+      }
+
+      throw error
+    }
+  }
+
+  /**
    * Creates a new resource on the specified endpoint
    */
   async store<StoreT = T>(payload?: Payload): Promise<StoreT> {
