@@ -892,6 +892,32 @@ describe('Request', () => {
     })
   })
 
+  describe('download()', () => {
+    it('should return the raw Response object on success', async () => {
+      const mockResponse = new Response('file content', {
+        status: 200,
+        statusText: 'OK',
+      })
+      fetch.mockResolvedValueOnce(mockResponse)
+      const req = new PublitApiRequest<Thing>('things')
+      const response = await req.download()
+      expect(response).toBe(mockResponse)
+      expect(fetch).toHaveBeenCalledWith(req.url.toString(), req.requestInit)
+    })
+
+    it('should call onError and throw ApiRequestError on fetch failure', async () => {
+      const handleError = jest.fn()
+      fetch.mockRejectedValueOnce(new Error('Network error'))
+      const req = new PublitApiRequest<Thing>('things', {
+        onError: handleError,
+      })
+      await expect(req.download()).rejects.toEqual({
+        message: 'Request failed',
+      })
+      expect(handleError).toHaveBeenCalledWith({ message: 'Request failed' })
+    })
+  })
+
   describe('debugging', () => {
     let consoleLogSpy: jest.SpyInstance
     beforeEach(() => {

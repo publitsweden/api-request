@@ -453,10 +453,9 @@ export default class PublitApiRequest<T> {
   }
 
   /**
-   * Do a simple fetch request without transforming the return value to json
+   * Do a simple fetch request and return the Response (not tranforming to json)
    */
   async download(): Promise<Response> {
-    //return this.fetch()
     try {
       const response = await fetch(this.url.toString(), this.requestInit)
       this.response = response
