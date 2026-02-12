@@ -294,7 +294,7 @@ class PublitApiRequest {
             try {
                 const response = yield fetch(this.url.toString(), this.requestInit);
                 this.response = response;
-                return response;
+                return response.blob();
             }
             catch (err) {
                 console.log(err);

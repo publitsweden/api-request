@@ -229,7 +229,7 @@ export default class PublitApiRequest<T> {
     /**
      * Do a simple fetch request without transforming the return value to json
      */
-    download(): Promise<Response>;
+    download(): Promise<Blob>;
     /**
      * Creates a new resource on the specified endpoint
      */
