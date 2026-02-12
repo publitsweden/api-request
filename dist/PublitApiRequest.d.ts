@@ -227,7 +227,7 @@ export default class PublitApiRequest<T> {
      */
     show(id?: string): Promise<T>;
     /**
-     * Do a simple fetch request without transforming the return value to json
+     * Do a simple fetch request and return the Response (not tranforming to json)
      */
     download(): Promise<Response>;
     /**

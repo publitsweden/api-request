@@ -286,11 +286,10 @@ class PublitApiRequest {
         });
     }
     /**
-     * Do a simple fetch request without transforming the return value to json
+     * Do a simple fetch request and return the Response (not tranforming to json)
      */
     download() {
         return __awaiter(this, void 0, void 0, function* () {
-            //return this.fetch()
             try {
                 const response = yield fetch(this.url.toString(), this.requestInit);
                 this.response = response;

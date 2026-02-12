@@ -675,6 +675,30 @@ describe('Request', () => {
             });
         }));
     });
+    describe('download()', () => {
+        it('should return the raw Response object on success', () => __awaiter(void 0, void 0, void 0, function* () {
+            const mockResponse = new Response('file content', {
+                status: 200,
+                statusText: 'OK',
+            });
+            jest_fetch_mock_1.default.mockResolvedValueOnce(mockResponse);
+            const req = new PublitApiRequest_1.default('things');
+            const response = yield req.download();
+            expect(response).toBe(mockResponse);
+            expect(jest_fetch_mock_1.default).toHaveBeenCalledWith(req.url.toString(), req.requestInit);
+        }));
+        it('should call onError and throw ApiRequestError on fetch failure', () => __awaiter(void 0, void 0, void 0, function* () {
+            const handleError = jest.fn();
+            jest_fetch_mock_1.default.mockRejectedValueOnce(new Error('Network error'));
+            const req = new PublitApiRequest_1.default('things', {
+                onError: handleError,
+            });
+            yield expect(req.download()).rejects.toEqual({
+                message: 'Request failed',
+            });
+            expect(handleError).toHaveBeenCalledWith({ message: 'Request failed' });
+        }));
+    });
     describe('debugging', () => {
         let consoleLogSpy;
         beforeEach(() => {
