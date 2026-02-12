@@ -455,13 +455,13 @@ export default class PublitApiRequest<T> {
   /**
    * Do a simple fetch request without transforming the return value to json
    */
-  async download(): Promise<Response> {
+  async download(): Promise<Blob> {
     //return this.fetch()
     try {
       const response = await fetch(this.url.toString(), this.requestInit)
       this.response = response
 
-      return response
+      return response.blob()
     } catch (err) {
       console.log(err)
       const error: ApiRequestError = {
