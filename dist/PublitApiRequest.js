@@ -286,6 +286,29 @@ class PublitApiRequest {
         });
     }
     /**
+     * Do a simple fetch request without transforming the return value to json
+     */
+    download() {
+        return __awaiter(this, void 0, void 0, function* () {
+            //return this.fetch()
+            try {
+                const response = yield fetch(this.url.toString(), this.requestInit);
+                this.response = response;
+                return response;
+            }
+            catch (err) {
+                console.log(err);
+                const error = {
+                    message: 'Request failed',
+                };
+                if (this.options.onError != null) {
+                    yield this.options.onError(error);
+                }
+                throw error;
+            }
+        });
+    }
+    /**
      * Creates a new resource on the specified endpoint
      */
     store(payload) {

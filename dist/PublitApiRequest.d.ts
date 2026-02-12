@@ -227,6 +227,10 @@ export default class PublitApiRequest<T> {
      */
     show(id?: string): Promise<T>;
     /**
+     * Do a simple fetch request without transforming the return value to json
+     */
+    download(): Promise<Response>;
+    /**
      * Creates a new resource on the specified endpoint
      */
     store<StoreT = T>(payload?: Payload): Promise<StoreT>;
