@@ -25,13 +25,10 @@
     "publish-minor": "npm version minor",
     "build-docs": "typedoc src/index.ts --readme none"
   },
-  "peerDependencies": {
-    "typescript": "^4.0.0 || ^5.0.0"
-  },
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
+    "jest-environment-jsdom": "^30.3.0",
     "jest-fetch-mock": "^3.0.3",
     "prettier": "^3.8.1",
     "ts-jest": "^29.4.6",

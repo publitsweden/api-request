@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",
-    "target": "es2015",
+    "types": ["node", "jest"],
+    "rootDir": "./src",
+    "module": "NodeNext",
+    "target": "es2022",
     "declaration": true,
-    "outDir": "./dist",
+    "outDir": "dist",
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "nodenext",
   },
   "include": ["src/**/*"]
 }
